@@ -1,0 +1,345 @@
+<div class="full-height pb-43">
+    <div class="container-fluid bg-white p-2">
+<!--         <div class="pull-right">
+            <button class="btn btn-info btn-xs" [disabled]="!canAction" (click)="addRowEvent(selected_entity)">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+        </div> -->
+        <div *ngIf="!removeArrayMode">
+            <button class="btn btn-primary btn-xs mr-1" (click)="onEditRowModal()">
+                <i class="fa fa-plus"></i> {{'form.add' | translate}}
+            </button>
+            <button class="btn btn-info btn-xs mr-1" (click)="onEditRowModal(selected_entity?.id, true, true)"
+                [disabled]="!canAction">
+                <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+        <div *ngIf="removeArrayMode">
+            <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows(true)">
+                <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+            </button>
+            <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                {{'form.cancel' | translate}}
+            </button>
+        </div>
+    </div>
+
+    <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+        [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true"
+        [autoshowfiltericon]="true" [enabletooltips]="false" [selectionmode]="selectMode" [groupable]="true"
+        [showgroupsheader]="false" (onRowselect)="onRowSelect($event)" [scrollbarsize]="7"
+        (onRowdoubleclick)="addRowEvent(selected_entity)">
+    </jqxGrid>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'Standard function' | translate}}</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form, true)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ (entity.id ? "form.edit" : "form.add") | translate }} {{'standard function' | translate }}
+                    </p>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'grouptype' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.type" id="type" name="type"
+                                    [PlaceHolder]="''">
+                                    <pg-option *ngFor="let type of functionType | enumToArray"
+                                        [Label]="type | translate" [Value]="type">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group"
+                                [class.has-error]="externalName.invalid && (externalName.dirty || externalName.touched)">
+                                <label>{{'External name' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="externalName" name="externalName"
+                                    placeholder="{{'External name' | translate}}" [(ngModel)]="entity.externalName"
+                                    #externalName="ngModel" required />
+                                <span class="help fs-10 pull-right">{{'Name in offers, invoices and contracts' | translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group"
+                                [class.has-error]="internalName.invalid && (internalName.dirty || internalName.touched)">
+                                <label>{{'Internal name' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="internalName" name="internalName"
+                                    placeholder="{{'Internal name' | translate}}" [(ngModel)]="entity.internalName"
+                                    #internalName="ngModel" required />
+                                <span class="help fs-10 pull-right">{{'Name on packing slip' | translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Travel time to' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="timeBefore" name="timeBefore"
+                                        [(ngModel)]="entity.timeBefore" #timeBefore="ngModel">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.timeBeforeType"
+                                            id="timeBeforeType" name="timeBeforeType" [PlaceHolder]="''">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Travel time after' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="timeAfter" name="timeAfter"
+                                        [(ngModel)]="entity.timeAfter" #timeAfter="ngModel">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.timeAfterType"
+                                            id="timeAfterType" name="timeAfterType" [PlaceHolder]="''">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Duration' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="duration" name="duration"
+                                        [(ngModel)]="entity.duration" #duration="ngModel">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.durationType"
+                                            id="durationType" name="durationType" [PlaceHolder]="''">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div *ngIf="entity.type == functionType.crew" class="form-group">
+                                <label>{{'break' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="break" name="break"
+                                        [(ngModel)]="entity.break" #break="ngModel">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.breakType" id="breakType"
+                                            name="breakType" [PlaceHolder]="''">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf="entity.type == functionType.transport">
+                                <div class="form-group">
+                                    <label>{{'distance' | translate}}</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="distance" name="distance"
+                                            [disabled]="entity.takeTimeFromLocation">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                km
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="checkbox check-primary">
+                                    <input type="checkbox" id="takeTimeFromLocation" checked="checked"
+                                        name="takeTimeFromLocation" [(ngModel)]="entity.takeTimeFromLocation">
+                                    <label for="takeTimeFromLocation">
+                                        {{'Calculate distance based on address' | translate}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Rental expenses' | translate}}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            {{'hourlyrate' | translate}}
+                                        </span>
+                                    </div>
+                                    <input type="number" class="form-control" id="rentalHourRate" name="rentalHourRate"
+                                        [(ngModel)]="entity.rentalHourRate" #rentalHourRate="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            {{'Fixed' | translate}}
+                                        </span>
+                                    </div>
+                                    <input type="number" class="form-control" id="rentalFixed" name="rentalFixed"
+                                        [(ngModel)]="entity.rentalFixed" #rentalFixed="ngModel">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Sublease expenses' | translate}}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            {{'hourlyrate' | translate}}
+                                        </span>
+                                    </div>
+                                    <input type="number" class="form-control" id="subhireHourRate"
+                                        name="subhireHourRate" [(ngModel)]="entity.subhireHourRate"
+                                        #subhireHourRate="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            {{'Fixed' | translate}}
+                                        </span>
+                                    </div>
+                                    <input type="number" class="form-control" id="subhireFixed" name="subhireFixed"
+                                        [(ngModel)]="entity.subhireFixed" #subhireFixed="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'vatclass' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.vatClassId" name="vatClassId"
+                                    [PlaceHolder]="''" ShowSearch>
+                                    <pg-option *ngFor="let item of vatTypes" [Label]="item.name" [Value]="item.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="includeInPrice" checked="checked" name="includeInPrice"
+                                    [(ngModel)]="entity.includeInPrice">
+                                <label for="includeInPrice">
+                                    {{'includeinprice' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="showInPlaner" checked="checked" name="showInPlaner"
+                                    [(ngModel)]="entity.showInPlaner" [disabled]="true">
+                                <label for="showInPlaner">
+                                    {{'View on schedule' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                   <!--  <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Комментарий</label>
+                                <mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+                                    <mat-tab label="Клиент">
+                                        <div class="row mt-2" style="height: 300px;">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea rows="3" class="form-control" id="customerRemark"
+                                                        name="customerRemark" placeholder="..."
+                                                        [(ngModel)]="entity.customerRemark" #customerRemark="ngModel">
+                                                        </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Планировщик">
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea rows="3" class="form-control" id="plannerRemark"
+                                                        name="plannerRemark" placeholder="..."
+                                                        [(ngModel)]="entity.plannerRemark" #plannerRemark="ngModel">
+                                                        </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Сотрудник">
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea rows="3" class="form-control" id="crewMemberRemark"
+                                                        name="crewMemberRemark" placeholder="..."
+                                                        [(ngModel)]="entity.crewMemberRemark"
+                                                        #crewMemberRemark="ngModel">
+                                                        </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

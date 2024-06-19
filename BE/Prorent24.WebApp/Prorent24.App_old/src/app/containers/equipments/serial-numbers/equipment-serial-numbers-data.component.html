@@ -1,0 +1,226 @@
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #form="ngForm" (ngSubmit)="submitData(form, true, true, 1)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a [routerLink]="['/equipments/edit', parentId, 'serialNumbers']" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group"
+                            [class.has-error]="serialNumber.invalid && (serialNumber.dirty || serialNumber.touched)">
+                            <label class="label-sm">{{'serialnumber' | translate}} <span class="text-danger">*</span></label>
+                            <input type="text" placeholder="{{'serialnumber' | translate}}" class="form-control" id="serialNumber"
+                                name="serialNumber" [(ngModel)]="entity.serialNumber" #serialNumber="ngModel" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="label-sm">{{'Internal link' | translate}}</label>
+                            <input type="text" placeholder="" class="form-control" id="internalReference"
+                                name="internalReference" [(ngModel)]="entity.internalReference"
+                                #internalReference="ngModel">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group"
+                            [class.has-error]="purchasePrice.invalid && (purchasePrice.dirty || purchasePrice.touched)">
+                            <label class="label-sm">{{'Purchase price' | translate}} <span class="text-danger">*</span></label>
+                            <input type="number" placeholder="" class="form-control" id="internalReference"
+                                name="purchasePrice" [(ngModel)]="entity.purchasePrice" #purchasePrice="ngModel" numbersOnly [numType]="'decimal'"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="col-md-12">
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="calculateBookValueAutomatically" checked="checked"
+                                name="calculateBookValueAutomatically"
+                                [(ngModel)]="entity.calculateBookValueAutomatically">
+                            <label for="calculateBookValueAutomatically">
+                                Рассчитывать балансовую стоимость автоматически
+                            </label>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>{{'purchasedate' | translate}} <span class="text-danger">*</span></label>
+                            <div class="input-group date">
+                                <pg-datepicker name="purchaseDate" [(ngModel)]="entity.purchaseDate" [ShowTime]="false"
+                                    [Format]="'DD-MM-YYYY'" [required]="true" [Placeholder]="'Выберите дату...'">
+                                </pg-datepicker>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group" [class.has-error]="depreciationPerMonth.invalid && (depreciationPerMonth.dirty || depreciationPerMonth.touched)">
+                            <label class="label-sm">{{'Depreciation per month' | translate}}</label>
+                            <input type="number" placeholder="" class="form-control" id="depreciationPerMonth"
+                                name="depreciationPerMonth" [(ngModel)]="entity.depreciationPerMonth" numbersOnly [numType]="'decimal'"
+                                #depreciationPerMonth="ngModel">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>{{'Comment' | translate}}</label>
+                            <textarea rows="3" class="form-control" id="remark" name="remark" placeholder="..."
+                                [(ngModel)]="entity.remark">
+                                    </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="active" checked="checked" name="active"
+                                [(ngModel)]="entity.active">
+                            <label for="active">
+                                {{'active' | translate}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <pgcard MinimalHeader="true" [AdditionalClasses]="'mt-2'">
+                    <ng-template #CardTitle>
+                        {{'Supplier' | translate}}
+                    </ng-template>
+                    <input type="hidden" [(ngModel)]="entity.suppliersInfo" name="suppliersInfo">
+
+                    <div *ngFor="let supplier of entity.suppliersInfo; index as i" class="pb-3 mb-3" style="border-bottom: .5px dashed #e5e5e5;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{'Company name' | translate}}</label>
+                                    <input type="text" placeholder="{{'Company name' | translate}}" class="form-control"
+                                        name="companyName" [(ngModel)]="supplier.companyName" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{'ContactPerson' | translate}}</label>
+                                    <input type="text" placeholder="{{'ContactPerson' | translate}}" class="form-control"
+                                        name="contactPerson" [(ngModel)]="supplier.contactPerson" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'phone' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="phone"
+                                        [(ngModel)]="supplier.phone" mask="+0(000) 000-00-00" [showMaskTyped]="true"
+                                        [dropSpecialCharacters]="false" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'email' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="email"
+                                        [(ngModel)]="supplier.email" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'Website' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="website"
+                                        [(ngModel)]="supplier.website" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-sm btn-danger" (click)="removeSupplier(i);">
+                                    <i class="fa fa-trash"></i> {{'delete' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form role="form" #supplierForm="ngForm" (ngSubmit)="addSupplier(supplierForm)">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{'Company name' | translate}}</label>
+                                    <input type="text" placeholder="{{'Company name' | translate}}" class="form-control"
+                                        name="companyName" [(ngModel)]="supplier_Form.companyName" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{'ContactPerson' | translate}}</label>
+                                    <input type="text" placeholder="{{'ContactPerson' | translate}}" class="form-control"
+                                        name="contactPerson" [(ngModel)]="supplier_Form.contactPerson" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'phone' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="phone"
+                                        [(ngModel)]="supplier_Form.phone" mask="+0(000) 000-00-00"
+                                        [showMaskTyped]="true" [dropSpecialCharacters]="false" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'email' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="email"
+                                        [(ngModel)]="supplier_Form.email" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'Website' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" name="website"
+                                        [(ngModel)]="supplier_Form.website" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-sm btn-white" [disabled]="supplierForm.invalid"><i
+                                        class="fa fa-plus"></i> {{'form.add' | translate}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </pgcard>
+            </div>
+        </pgcard>
+    </form>
+</div>

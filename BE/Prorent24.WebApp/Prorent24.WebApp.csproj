@@ -1,0 +1,502 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>Prorent24.App\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <SignAssembly>false</SignAssembly>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Prorent24.WebApp.xml</DocumentationFile>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
+    <PackageReference Include="Humanizer.Core" Version="2.7.9" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="AppData\LetterheadEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="AppData\FactorGroupOptionEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="AppData\FactorGroupEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="AppData\AdditionalConditionEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\PublishProfiles\Beta-Prorent24.pubxml.user" />
+    <None Include="Properties\PublishProfiles\Prod-Prorent24.Company1.pubxml.user" />
+    <None Include="Properties\PublishProfiles\Prod-Prorent24.Company2.pubxml.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <EmbeddedResource Remove="%2a%2a\**" />
+    <EmbeddedResource Remove="Pages\**" />
+    <EmbeddedResource Remove="SystemLogic\**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="%2a%2a/%2a.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="AppData\AdditionalConditionEntity.json" />
+    <Content Remove="AppData\FactorGroupEntity.json" />
+    <Content Remove="AppData\FactorGroupOptionEntity.json" />
+    <Content Remove="AppData\LetterheadEntity.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="%2a%2a/%2a.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--<None Remove="libwkhtmltox.dll" />
+    <None Remove="libwkhtmltox.dylib" />
+    <None Remove="libwkhtmltox.so" />-->
+    <None Remove="Prorent24.App\src\app\models\configuration\account\module-permission.model.ts" />
+    <None Remove="Prorent24.App\src\app\models\configuration\account\user-role-permission.model.ts" />
+    <None Remove="Prorent24.App\src\app\shared\enums\document-template-type.enum.ts" />
+    <None Remove="Prorent24.db-journal" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <Compile Include="AppData\Resources\LocalizedKeys.Designer.cs" />
+    <Compile Include="ClaimsPrincipalFactory.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Configurations\Account\CompanyDetailsController.cs" />
+    --><!--<Compile Include="Controllers\Configurations\Account\UserRolesController.cs" />--><!--
+    <Compile Include="Controllers\Configurations\ConfigurationController.cs" />
+    <Compile Include="Controllers\Configurations\CustomerCommunication\CustomerCommunicationsController.cs" />
+    <Compile Include="Controllers\Configurations\CustomerCommunication\DocumentTemplatesController.cs" />
+    <Compile Include="Controllers\Configurations\CustomerCommunication\LetterheadsController.cs" />
+    <Compile Include="Controllers\Configurations\CustomerCommunication\SalutationsController.cs" />
+    <Compile Include="Controllers\Configurations\DirectoryController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\AdditionalConditionController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\DiscountGroupController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\ElectronicInvoicingController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\FactorGroupController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\FactorGroupOptionController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\FinancialSettingsController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\InvoiceMomentController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\LedgerController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\PaymentController.cs" />
+    <Compile Include="Controllers\Configurations\Financials\VatController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\NumberSeriesController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\PeriodicInspectionsController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\ProjectTemplatesController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\ProjectTypesController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\SettingsController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\TimeLocationController.cs" />
+    <Compile Include="Controllers\Configurations\Settings\TimeRegistrationSettingsController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\CrewMembersController.cs" />
+    <Compile Include="Controllers\CrewPlannerController.cs" />
+    <Compile Include="Controllers\EquipmentController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentAccessoryController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentAlternativeController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentContentController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentPeriodicInspectionController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentQRCodeController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentSerialNumberController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentStockController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentSupplierController.cs" />
+    <Compile Include="Controllers\Equipments\EquipmentWebShopController.cs" />
+    <Compile Include="Controllers\General\DocumentController.cs" />
+    <Compile Include="Controllers\General\EnumController.cs" />
+    <Compile Include="Controllers\General\ExcelController.cs" />
+    <Compile Include="Controllers\General\FileController.cs" />
+    <Compile Include="Controllers\General\FilterController.cs" />
+    <Compile Include="Controllers\General\FolderController.cs" />
+    <Compile Include="Controllers\General\GeneralController.cs" />
+    <Compile Include="Controllers\General\GridController.cs" />
+    <Compile Include="Controllers\General\NoteController.cs" />
+    <Compile Include="Controllers\General\PresetController.cs" />
+    <Compile Include="Controllers\General\TagController.cs" />
+    <Compile Include="Controllers\InvoiceController.cs" />
+    <Compile Include="Controllers\Invoices\InvoiceExcludedController.cs" />
+    <Compile Include="Controllers\Invoices\InvoiceLineController.cs" />
+    <Compile Include="Controllers\Maintenance\InspectionController.cs" />
+    <Compile Include="Controllers\Maintenance\RepairController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Controllers\Project\ProjectAdditionalCostController.cs" />
+    <Compile Include="Controllers\Project\ProjectController.cs" />
+    <Compile Include="Controllers\Project\ProjectDocumentsController.cs" />
+    <Compile Include="Controllers\Project\ProjectEquipmentController.cs" />
+    <Compile Include="Controllers\Project\ProjectFinancialController.cs" />
+    <Compile Include="Controllers\Project\ProjectFunctionController.cs" />
+    <Compile Include="Controllers\Project\ProjectPlanningController.cs" />
+    <Compile Include="Controllers\ScheduleController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\SubhireController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\TimeRegistrationController.cs" />
+    <Compile Include="Controllers\VehiclesController.cs" />
+    <Compile Include="Controllers\WorkPanelController.cs" />
+    <Compile Include="Deployment\ConfigurationSettings.cs" />
+    <Compile Include="Deployment\DeploymentNewClient.cs" />
+    <Compile Include="Deployment\PostDeployment.cs" />
+    <Compile Include="Deployment\UpdateDatabase.cs" />
+    <Compile Include="Extentions\CustomAssemblyLoadContext.cs" />
+    <Compile Include="Extentions\LogoExtention.cs" />
+    <Compile Include="Filters\ExceptionLoggerAttribute.cs" />
+    <Compile Include="Models\Account\ChangePasswordViewModel.cs" />
+    <Compile Include="Models\Account\LoginViewModel.cs" />
+    <Compile Include="Models\Account\PermissionViewModel.cs" />
+    <Compile Include="Models\Account\RegisterViewModel.cs" />
+    <Compile Include="Models\Account\UserClaimViewModel.cs" />
+    <Compile Include="Models\Account\UserRoleViewModel.cs" />
+    <Compile Include="Models\BaseListViewModel.cs" />
+    <Compile Include="Models\Configuration\Account\CompanyDetailsViewModel.cs" />
+    <Compile Include="Models\Configuration\Account\ContactInfoViewModel.cs" />
+    <Compile Include="Models\Configuration\Account\RolePermissionViewModel.cs" />
+    <Compile Include="Models\Configuration\CustomerCommunication\CustomerCommmunicationViewModel.cs" />
+    <Compile Include="Models\Configuration\CustomerCommunication\DocumentTemplateBlockViewModel.cs" />
+    <Compile Include="Models\Configuration\CustomerCommunication\DocumentTemplateViewModel.cs" />
+    <Compile Include="Models\Configuration\CustomerCommunication\LetterheadViewModel.cs" />
+    <Compile Include="Models\Configuration\CustomerCommunication\SalutationViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\AdditionalCondition\AdditionalConditionViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\DiscountGroupViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\ElectronicInvoicingViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\FactorGroupOptionViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\FactorGroupViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\FinancialSettingViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\InvoiceMomentViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\LedgerViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Payment\PaymentConditionDefaultViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Payment\PaymentConditionViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Payment\PaymentMethodViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Vat\VatClassSchemeRateViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Vat\VatClassViewModel.cs" />
+    <Compile Include="Models\Configuration\Financials\Vat\VatSchemeViewModel.cs" />
+    <Compile Include="Models\Configuration\Settings\PeriodicInspectionViewModel.cs" />
+    <Compile Include="Models\Configuration\Settings\ProjectTypeDefaultViewModel.cs" />
+    <Compile Include="Models\Configuration\Settings\ProjectTypeViewModel.cs" />
+    <Compile Include="Models\Configuration\Settings\TimeAndLocationViewModel.cs" />
+    <Compile Include="Models\Configuration\Settings\TimeRegistrationViewModel.cs" />
+    <Compile Include="Models\Contact\ContactElectronicInvoiceViewModel.cs" />
+    <Compile Include="Models\Contact\ContactPaymentViewModel.cs" />
+    <Compile Include="Models\Contact\ContactPersonShortViewModel.cs" />
+    <Compile Include="Models\Contact\ContactPersonViewModel.cs" />
+    <Compile Include="Models\Contact\ContactShortViewModel.cs" />
+    <Compile Include="Models\Contact\ContactViewModel.cs" />
+    <Compile Include="Models\CrewMember\CrewMemberRateViewModel.cs" />
+    <Compile Include="Models\CrewMember\CrewMemberShortViewModel.cs" />
+    <Compile Include="Models\CrewMember\CrewMemberViewModel.cs" />
+    <Compile Include="Models\CrewMember\SocialNetworkViewModel.cs" />
+    <Compile Include="Models\CrewPlanner\CrewPlannerProjectPlanningModel.cs" />
+    <Compile Include="Models\CrewPlanner\CrewPlannerViewModel.cs" />
+    <Compile Include="Models\Directory\DirectoryLocViewModel.cs" />
+    <Compile Include="Models\Directory\DirectoryViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentAccessoryViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentAlternativeViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentContentViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentPeriodicInspectionViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentQRCodeViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentSerialNumberViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentStockCorrectViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentStockViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentSupplierViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentViewModel.cs" />
+    <Compile Include="Models\Equipment\EquipmentWebShopViewModel.cs" />
+    <Compile Include="Models\Equipment\Supplier\SupplierInfoViewModel.cs" />
+    <Compile Include="Models\General\Address\AddressViewModel.cs" />
+    <Compile Include="Models\General\Document\DocumentViewModel.cs" />
+    <Compile Include="Models\General\File\FileViewModel.cs" />
+    <Compile Include="Models\General\Filter\FilterListViewModel.cs" />
+    <Compile Include="Models\General\Filter\SavedFilterValueViewModel.cs" />
+    <Compile Include="Models\General\Filter\SavedFilterViewModel.cs" />
+    <Compile Include="Models\General\Filter\SelectedFilterViewModel.cs" />
+    <Compile Include="Models\General\Folder\FolderViewModel.cs" />
+    <Compile Include="Models\General\Note\NoteViewModel.cs" />
+    <Compile Include="Models\General\Period\PeriodViewModel.cs" />
+    <Compile Include="Models\General\Period\ShortPeriodViewModel.cs" />
+    <Compile Include="Models\General\Perset\PresetViewModel.cs" />
+    <Compile Include="Models\General\SelectViewModel.cs" />
+    <Compile Include="Models\General\Tag\TagViewModel.cs" />
+    <Compile Include="Models\Grid\GridEntityViewModel.cs" />
+    <Compile Include="Models\Invoice\InvoiceExcludedViewModel.cs" />
+    <Compile Include="Models\Invoice\InvoiceLineViewModel.cs" />
+    <Compile Include="Models\Invoice\InvoiceShortInfoViewModel.cs" />
+    <Compile Include="Models\Invoice\InvoiceViewModel.cs" />
+    <Compile Include="Models\Maintenance\Inspection\InspectionSerialNumberViewModel.cs" />
+    <Compile Include="Models\Maintenance\Inspection\InspectionViewModel.cs" />
+    <Compile Include="Models\Maintenance\Repair\RepairViewModel.cs" />
+    <Compile Include="Models\Modules\DetailViewModel.cs" />
+    <Compile Include="Models\Modules\ModuleDetailViewModel.cs" />
+    <Compile Include="Models\Modules\ModuleViewModel.cs" />
+    <Compile Include="Models\Notification\NotificationShortModel.cs" />
+    <Compile Include="Models\Project\ProjectAdditionalCostViewModel.cs" />
+    <Compile Include="Models\Project\ProjectDocumentGroupViewModel.cs" />
+    <Compile Include="Models\Project\ProjectDocumentViewModel.cs" />
+    <Compile Include="Models\Project\ProjectEquipmentGroupViewModel.cs" />
+    <Compile Include="Models\Project\ProjectEquipmentMovement\ProjectEquipmentMovementListViewModel.cs" />
+    <Compile Include="Models\Project\ProjectEquipmentMovement\ProjectEquipmentMovementViewModel.cs" />
+    <Compile Include="Models\Project\ProjectEquipmentMovement\ProjectGroupMovementViewModel.cs" />
+    <Compile Include="Models\Project\ProjectEquipmentViewModel.cs" />
+    <Compile Include="Models\Project\ProjectFinancialCategoryUpdateModel.cs" />
+    <Compile Include="Models\Project\ProjectFinancialCategoryViewModel.cs" />
+    <Compile Include="Models\Project\ProjectFinancialViewModel.cs" />
+    <Compile Include="Models\Project\ProjectFunctionGroupViewModel.cs" />
+    <Compile Include="Models\Project\ProjectFunctionViewModel.cs" />
+    <Compile Include="Models\Project\ProjectPlanningViewModel.cs" />
+    <Compile Include="Models\Project\ProjectTimeViewModel.cs" />
+    <Compile Include="Models\Project\ProjectViewModel.cs" />
+    <Compile Include="Models\Project\ProjectWarhouseChangeStatusViewModel.cs" />
+    <Compile Include="Models\Project\ProjectWarhouseViewModel.cs" />
+    <Compile Include="Models\Setting\MenuViewModel.cs" />
+    <Compile Include="Models\Subhire\ShortageEquipmentViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireEquipmentGroupViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireEquipmentViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireListViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireModifiedEquipmentModel.cs" />
+    <Compile Include="Models\Subhire\SubhireShortageViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireShortViewModel.cs" />
+    <Compile Include="Models\Subhire\SubhireViewModel.cs" />
+    <Compile Include="Models\Tasks\TaskViewModel.cs" />
+    <Compile Include="Models\TimeRegistration\TimeRegistrationActivityViewModel.cs" />
+    <Compile Include="Models\TimeRegistration\TimeRegistrationViewModel.cs" />
+    <Compile Include="Models\Vehicle\VehicleViewModel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Transfers\BaseTranfer.cs" />
+    <Compile Include="Transfers\Configurations\Account\CompanyDetailsTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Account\RolePermissionTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Account\UserRoleTransfer.cs" />
+    <Compile Include="Transfers\Configurations\CustomerCommunication\CustomerCommmunicationTransfer.cs" />
+    <Compile Include="Transfers\Configurations\CustomerCommunication\DocumentTemplateTransfer.cs" />
+    <Compile Include="Transfers\Configurations\CustomerCommunication\LetterheadTransfer.cs" />
+    <Compile Include="Transfers\Configurations\CustomerCommunication\SalutationTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\AdditionalConditionTranfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\DiscountGroupTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\ElectronicInvoicingTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\FactorGroupOptionTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\FactorGroupTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\FinancialSettingsTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\InvoiceMomentTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\LedgerTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\PaymentConditionTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\PaymentMethodTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\VatClassTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Financials\VatSchemeTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Settings\PeriodicInspectionTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Settings\ProjectTypeTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Settings\TimeAndLocationTransfer.cs" />
+    <Compile Include="Transfers\Configurations\Settings\TimeRegistrationSettingsTransfer.cs" />
+    <Compile Include="Transfers\Contact\ContactElectronicInvoiceTransfer.cs" />
+    <Compile Include="Transfers\Contact\ContactPaymentTransfer.cs" />
+    <Compile Include="Transfers\Contact\ContactPersonTransfer.cs" />
+    <Compile Include="Transfers\Contact\ContactTransfer.cs" />
+    <Compile Include="Transfers\CrewMember\CrewMemberRateTransfer.cs" />
+    <Compile Include="Transfers\CrewMember\CrewMemberTransfer.cs" />
+    <Compile Include="Transfers\CrewMember\SocialNetworkTransfer.cs" />
+    <Compile Include="Transfers\CrewMember\UserTransfer.cs" />
+    <Compile Include="Transfers\CrewPlanner\CrewPlannerTransfer.cs" />
+    <Compile Include="Transfers\Directory\DirectoryTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentAccessoryTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentAlternativeTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentContentTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentPeriodicInspectionTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentQRCodeTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentSerialNumberTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentStockTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentSupplierTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentTransfer.cs" />
+    <Compile Include="Transfers\Equipment\EquipmentWebShopTransfer.cs" />
+    <Compile Include="Transfers\General\AddressTransfer.cs" />
+    <Compile Include="Transfers\General\DocumentTransfer.cs" />
+    <Compile Include="Transfers\General\FileTransfer.cs" />
+    <Compile Include="Transfers\General\FilterTransfer.cs" />
+    <Compile Include="Transfers\General\FolderTransfer.cs" />
+    <Compile Include="Transfers\General\NoteTransfer.cs" />
+    <Compile Include="Transfers\General\PeriodTransfer.cs" />
+    <Compile Include="Transfers\General\PresetTransfer.cs" />
+    <Compile Include="Transfers\General\TagTransfer.cs" />
+    <Compile Include="Transfers\Invoice\InvoiceExcludedTransfer.cs" />
+    <Compile Include="Transfers\Invoice\InvoiceLineTransfer.cs" />
+    <Compile Include="Transfers\Invoice\InvoiceTransfer.cs" />
+    <Compile Include="Transfers\Maintenance\Inspection\InspectionSerialNumberTransfer.cs" />
+    <Compile Include="Transfers\Maintenance\Inspection\InspectionTransfer.cs" />
+    <Compile Include="Transfers\Maintenance\Repair\RepairTransfer.cs" />
+    <Compile Include="Transfers\Modules\ModuleTransfer.cs" />
+    <Compile Include="Transfers\Notification\NotificationTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectAdditionalCostTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectDocumentTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectEquipmentGroupTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectEquipmentMovementTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectEquipmentTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectFinancialCategoryTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectFinancialTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectFunctionGroupTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectFunctionTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectPlanningTransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectTimetransfer.cs" />
+    <Compile Include="Transfers\Project\ProjectTransfer.cs" />
+    <Compile Include="Transfers\Settings\MenuTransfer.cs" />
+    <Compile Include="Transfers\Subhire\ShortageEquipmentTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireEquipmentGroupTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireEquipmentTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireListTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireShortageTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireShortTransfer.cs" />
+    <Compile Include="Transfers\Subhire\SubhireTransfer.cs" />
+    <Compile Include="Transfers\Tasks\TaskTransfer.cs" />
+    <Compile Include="Transfers\TimeRegistration\TimeRegistrationActivityTransfer.cs" />
+    <Compile Include="Transfers\TimeRegistration\TimeRegistrationTransfer.cs" />
+    <Compile Include="Transfers\Vehicle\VehicleTransfercs.cs" />
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <Content Include="libwkhtmltox.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </Content>
+    <Content Include="libwkhtmltox.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </Content>
+    <Content Include="libwkhtmltox.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </Content>
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <EmbeddedResource Include="AppData\Resources\LocalizedKeys.resx" />
+    <EmbeddedResource Include="Prorent24.App\src\app\shared\enums\document-template-type.enum.ts">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prorent24.BLL\Prorent24.BLL.csproj" />
+    <ProjectReference Include="..\Prorent24.Common\Prorent24.Common.csproj" />
+    <ProjectReference Include="..\Prorent24.Context\Prorent24.Context.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="AppData\DiscountGroupEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\InvoiceMomentEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\LedgerEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\PaymentConditionEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\PaymentMethodEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\VatClassEntity.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\AppData\empty.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\AppData\Structures\20190821195612_21_08_2019.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="Prorent24.App\src\app\models\configuration\account\module-permission.model.ts" />
+    <TypeScriptCompile Include="Prorent24.App\src\app\models\configuration\account\user-role-permission.model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="AppData\Resources\LocalizedKeys.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LocalizedKeys.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="AppData\Resources\LocalizedKeys.resx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedKeys.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!--<ItemGroup Condition=" '$(CONFIGURATION)' == 'Debug' And '$(PROCESSOR_ARCHITECTURE)' == 'x86' And '$(PROCESSOR_ARCHITEW6432)' == '' ">
+    <ContentWithTargetPath Include="libwkhtmltox.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <TargetPath>libwkhtmltox.dll</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(CONFIGURATION)' == 'Debug' And '$(PROCESSOR_ARCHITECTURE)' == 'AMD64' Or '$(PROCESSOR_ARCHITEW6432)' == 'AMD64' ">
+    <ContentWithTargetPath Include="libwkhtmltox.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <TargetPath>libwkhtmltox.dll</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(CONFIGURATION)' == 'Release' ">
+    <ContentWithTargetPath Include="libwkhtmltox.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <TargetPath>libwkhtmltox.dll</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>-->
+    <!-- Ensure Node.js is installed -->
+
+  <!--<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <Exec Command="node version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>-->
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+  
+</Project>

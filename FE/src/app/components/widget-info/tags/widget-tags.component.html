@@ -1,0 +1,26 @@
+<pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+    <ng-template #CardTitle>
+        Маркировка
+    </ng-template>
+    <div class="filter-tags pt-2">
+        <pg-tag *ngFor="let tag of data" ColorClass="label-white" [Closable]="true" (BeforeClose)="removeTag(tag.id)"><i
+                class="fa fa-tag m-r-xs"></i>
+            {{tag.name}}</pg-tag>
+
+        <div class="mt-2">
+            <form role="form" #tagForm="ngForm" (ngSubmit)="submitTag(tagForm)">
+                <input type="hidden" name="entityId" [(ngModel)]="entityId" required>
+                <input type="hidden" name="entity" [(ngModel)]="entityType" required>
+                <div class="input-group">
+                    <input class="form-control input-sm" type="text" placeholder="Добавить маркировку" name="name"
+                        [(ngModel)]="tag.name" required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-sm btn-white" [disabled]="tagForm.invalid">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</pgcard>

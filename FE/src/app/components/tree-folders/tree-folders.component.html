@@ -1,0 +1,82 @@
+<div bsModal #foldersModal="bs-modal" class="modal fade slide-right" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content-wrapper">
+            <div class="modal-content">
+                <button type="button" class="close" (click)="foldersModal.hide()" aria-hidden="true"><i
+                        class="pg pg-close fs-14"></i>
+                </button>
+                <div class="modal-header clearfix">
+                    <h4 class="p-b-5">
+                        <span class="semi-bold">Папки</span>
+                    </h4>
+                </div>
+                <div class="container-xs-height full-height">
+                    <div class="row-xs-height">
+                        <div class="modal-body col-xs-height text-center">
+                            <div class="ml-2">
+                                <div *ngIf="!editFolderMode">
+                                    <form role="form" #folderForm="ngForm" (ngSubmit)="submitFolder(folderForm)">
+                                        <input type="hidden" name="moduleType" [(ngModel)]="entityType" required>
+                                        <div class="input-group pb-2">
+                                            <input class="form-control input-sm" type="text" placeholder="Новая папка"
+                                                name="name" [(ngModel)]="folder.name" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-sm btn-white"
+                                                    [disabled]="folderForm.invalid">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div *ngIf="editFolderMode">
+                                    <form role="form" #folderForm="ngForm" (ngSubmit)="editFolder(folderForm);">
+                                        <input type="hidden" name="id" [(ngModel)]="folder.id" required>
+                                        <input type="hidden" name="parentId" [(ngModel)]="folder.parentId" required>
+                                        <input type="hidden" name="moduleType" [(ngModel)]="entityType" required>
+                                        <input type="hidden" name="label" [(ngModel)]="folder.name" required>
+                                        <div class="input-group pb-2">
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-sm btn-white" (click)="deleteFolder(folder.id)">
+                                                    <i class="fa fa-trash text-danger"></i>
+                                                </button>
+                                            </div>
+                                            <input class="form-control input-sm" type="text" name="name"
+                                                [(ngModel)]="folder.name" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-sm btn-white"
+                                                    [disabled]="folderForm.invalid">
+                                                    <i class="fa fa-save"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <button class="btn btn-block btn-xs btn-white mb-2" (click)="editFolderMode = false; folder.name=''"><i class="fa fa-plus"></i> Новая папка</button>
+                                </div>
+
+                                <form role="form" #foldersForm="ngForm" (ngSubmit)="selectFolder(foldersForm)">
+                                    <input type="hidden" name="id" [(ngModel)]="folder.id" required>
+                                    <input type="hidden" name="name" [(ngModel)]="folder.name" required>
+                                    <div class="tree pl-2">
+                                        <jqxTree #foldersTree [theme]="'metro'" [width]="'100%'" [height]="450"
+                                            [source]="folders" [toggleMode]="'click'"
+                                            (onSelect)="treeFolderOnSelect($event);" (onDragEnd)="dragFolder()">
+                                        </jqxTree>
+
+                                    </div>
+                                    <div class="text-center pt-5">
+                                        <button type="submit" class="btn btn-xs btn-block btn-primary mr-2"
+                                            [disabled]="foldersForm.invalid">
+                                            Применить
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

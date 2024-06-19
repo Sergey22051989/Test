@@ -1,0 +1,1 @@
+﻿ALTER TABLE "AspNetUsers" ADD "ProfileImage" TEXT NULL;

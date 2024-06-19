@@ -1,0 +1,56 @@
+<div class="full-height">
+    <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.nestedSplitter">
+        <div class="splitter-panel">
+            <div class="jumbotron no-margin">
+                <div class="container-fluid">
+                    <div class="inner" pg-parallax>
+                        <h4>{{'Notifications' | translate}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="full-height pb-96">
+                <div class="container-fluid bg-white p-2">
+                    <div class="pull-right">
+                        <button class="btn btn-xs btn-white" (click)="loadData()" matTooltip="{{'Refresh' | translate}}"><i
+                                class="fa fa-refresh"></i></button>
+                        <button class="btn btn-xs btn-white ml-1" (click)="toggleWidget()" matTooltip="{{'Open/close widget' | translate}}"><i
+                                class="fa fa-cubes"></i></button>
+                    </div>
+                    <a routerLink="/" class="link-button mr-1">
+                        <button type="button" class="btn btn-white btn-xs">
+                            {{'form.close' | translate}}
+                        </button>
+                    </a>
+                </div>
+                <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+                    [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [scrollbarsize]="7"
+                    [autoshowfiltericon]="true" [enabletooltips]="false" [selectionmode]="selectMode" [filterable]="true"
+                    (onRowselect)="onRowSelect($event)">
+                </jqxGrid>
+            </div>
+        </div>
+        <div class="splitter-panel">
+            <div class="widget-info">
+                <div perfectScrollbar>
+                    <div *ngIf="selected_entity">
+                        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+                            <ng-template #CardTitle>
+                                {{selected_entity.theme}}
+                            </ng-template>
+                            <div class="pt-2 bg-">
+                                <div>
+                                    <span
+                                        class="small hint-text">{{selected_entity.creationDate | date:"dd.MM.yy HH:mm"}}</span>
+                                </div>
+                                <p>
+                                    {{selected_entity.message}}
+                                </p>
+                            </div>
+                        </pgcard>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </jqxSplitter>
+</div>

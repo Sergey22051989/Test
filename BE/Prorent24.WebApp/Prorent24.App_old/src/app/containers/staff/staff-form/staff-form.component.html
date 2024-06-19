@@ -1,0 +1,434 @@
+<div class="container-fluid container-fixed-lg mt-3">
+    <ng-template #TabHeading>
+        {{'data' | translate}}
+    </ng-template>
+    <form role="form" #staffDataForm="ngForm" (ngSubmit)="submitDataOverride(staffDataForm, true, true, 1)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/staff" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs mr-1" [disabled]="staffDataForm.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+                <button *ngIf="entity.id && entity.isSystemUser" type="button" (click)="sendLoginInformation(entity.id)"
+                    class="btn btn-white btn-xs mr-1">
+                    <i class="fa fa-paper-plane"></i> {{'Send login information' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>{{'folder' | translate}} <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="hidden" name="folderId" [(ngModel)]="entity.folderId" required>
+                                <input class="form-control input-sm" name="folderName" [(ngModel)]="entity.folderName"
+                                    type="text" placeholder="..." disabled required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        (click)="foldersModal.showFolders()">
+                                        <i class="fa fa-folder"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        <i class="fa fa-info"></i> {{'data' | translate}}
+                    </ng-template>
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="checkbox check-primary">
+                                    <input type="checkbox" id="isSystemUser" checked="checked" name="isSystemUser"
+                                        [(ngModel)]="entity.isSystemUser">
+                                    <label for="isSystemUser">
+                                        {{'System user' | translate}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="checkbox check-primary">
+                                    <input type="checkbox" id="displayInPlanner" checked="checked" name="displayInPlanner"
+                                        [(ngModel)]="entity.displayInPlanner">
+                                    <label for="displayInPlanner">
+                                        {{'showinplaner' | translate}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [class.has-error]="lastName.invalid && (lastName.dirty || lastName.touched)">
+                                    <label class="label-sm">{{'lastname' | translate}} <span class="text-danger">*</span></label>
+                                    <input type="text" placeholder="{{'lastname' | translate}}" class="form-control" id="lastName"
+                                        name="lastName" [(ngModel)]="entity.lastName" #lastName="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group"
+                                    [class.has-error]="firstName.invalid && (firstName.dirty || firstName.touched)">
+                                    <label class="label-sm">{{'firstname' | translate}} <span class="text-danger">*</span></label>
+                                    <input type="text" placeholder="{{'firstname' | translate}}" class="form-control" id="firstName"
+                                        name="firstName" [(ngModel)]="entity.firstName" #firstName="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="label-sm">{{'middlename' | translate}}</label>
+                                    <input type="text" placeholder="{{'middlename' | translate}}" class="form-control" id="middleName"
+                                        name="middleName" [(ngModel)]="entity.middleName" #middleName="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'phone' | translate}}</label>
+                                    <input type="text" placeholder="" class="form-control" mask="+0(000) 000-00-00"
+                                        [showMaskTyped]="true" [dropSpecialCharacters]="false" id="phone" name="phone"
+                                        [(ngModel)]="entity.phone" #phone="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>{{'additional contacts' | translate}}</label>
+                                    <div class="input-group pb-2"
+                                        *ngFor="let social of entity.socialNetworks; let i = index">
+                                        <div class="input-group-prepend">
+                                            <input type="text" class="form-control"
+                                                style="width: 110px;"
+                                                value="{{social.type | translate}}" disabled="true">
+                                        </div>
+                                        <input type="text" placeholder="" class="form-control" name="name{{i}}"
+                                            [(ngModel)]="social.name" />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-white"
+                                                (click)="removeSocialContact(i)"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <form role="form" #socialNetworkLineform="ngForm"
+                                        (ngSubmit)="addSocialContact(socialNetworkLineform)">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <pg-select style="width: 100%; min-width: 110px;"
+                                                    [(ngModel)]="socialForm.type" name="type" [PlaceHolder]="''"
+                                                    [required]="true" [FirstDefault]="true">
+                                                    <pg-option *ngFor="let social of socialNetworks | enumToArray"
+                                                        [Label]="social | translate" [Value]="social">
+                                                    </pg-option>
+                                                </pg-select>
+                                            </div>
+                                            <input type="text" placeholder="" class="form-control" name="name"
+                                                [(ngModel)]="socialForm.name" required />
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-white"
+                                                    [disabled]="socialNetworkLineform.invalid"><i
+                                                        class="fa fa-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+
+            <pgcard MinimalHeader="true" *ngIf="entity.isSystemUser">
+                <ng-template #CardTitle>
+                    <i class="fa fa-lock"></i> {{'administrative' | translate}}
+                </ng-template>
+                <div class="">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'User role' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.userRoleId" [required]="true"
+                                    name="userRoleId" [PlaceHolder]="'Выберите роль'" AllowClear ShowSearch
+                                    [Disabled]="isCurrentUser" [FirstDefault]="entity.id ? false : true">
+                                    <pg-option *ngFor="let role of roles" [Label]="role.name" [Value]="role.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+
+                        </div>
+                    </div>
+
+                    <input type="hidden" [(ngModel)]="entity.email" name="username">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email <span class="text-danger">*</span></label>
+                                <input type="email" placeholder="e.g. some@example.com" class="form-control" id="email"
+                                    name="email" #email="ngModel" 
+                                    [(ngModel)]="entity.email" required> <!-- (keyup)="changeSymbol($event.target.value)" -->
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="active" checked="checked" name="active"
+                                    [(ngModel)]="entity.active">
+                                <label for="active">
+                                    {{'active' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </pgcard>
+
+            <pgcard MinimalHeader="true">
+                <ng-template #CardTitle>
+                    <i class="fa fa-credit-card"></i> {{'Administrative' | translate}}
+                </ng-template>
+                <div class="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'hours in the contract' | translate}}</label>
+                                <input type="number" placeholder="0" class="form-control" id="hoursInContract"
+                                    name="hoursInContract" [(ngModel)]="entity.hoursInContract" numbersOnly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'agreement date' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="contractDate" [(ngModel)]="entity.contractDate"
+                                        [AllowClear]="true" [Placeholder]="'Выберите дату...'">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'defaultrate' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.defaultRateId" name="defaultRateId"
+                                    [PlaceHolder]="''" ShowSearch [Disabled]="!rates || rates.length == 0">
+                                    <pg-option *ngFor="let rate of rates" [Label]="rate.name" [Value]="rate.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'bankAccountNumber' | translate}}</label>
+                                <input type="text" placeholder="{{'bankAccountNumber' | translate}}" class="form-control"
+                                    id="bankAccountNumber" name="bankAccountNumber"
+                                    [(ngModel)]="entity.bankAccountNumber">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Employee ID' | translate}}</label>
+                                <input type="text" placeholder="{{'Employee ID' | translate}}" class="form-control" id="vat" name="vat"
+                                    [(ngModel)]="entity.vat">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'companyName' | translate}}</label>
+                                <input type="text" placeholder="{{'companyName' | translate}}" class="form-control" id="companyName"
+                                    name="companyName" [(ngModel)]="entity.companyName">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'cocnumber' | translate}}</label>
+                                <input type="text" placeholder="{{'cocnumber' | translate}}" class="form-control" id="coCNumber"
+                                    name="coCNumber" [(ngModel)]="entity.coCNumber">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </pgcard>
+
+            <pgcard MinimalHeader="true">
+                <ng-template #CardTitle>
+                    <i class="fa fa-map-marker"></i> {{'address' | translate}}
+                </ng-template>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>{{'postalcode' | translate}}</label>
+                            <input type="text" placeholder="{{'postalcode' | translate}}" class="form-control" id="postalCode"
+                                name="postalCode" [(ngModel)]="entity.postalCode" #postcode="ngModel">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>{{'country' | translate}}</label>
+                            <pg-select style="width: 100%;" name="countryId" [(ngModel)]="entity.countryId"
+                                [PlaceHolder]="'Choose...' | translate" AllowClear ShowSearch>
+                                <pg-option *ngFor="let item of countries" [Label]="item.name" [Value]="item.id">
+                                </pg-option>
+                            </pg-select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>{{'city' | translate}}</label>
+                            <input type="text" placeholder="{{'city' | translate}}" class="form-control" id="city" name="city"
+                                [(ngModel)]="entity.city" #city="ngModel">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>{{'street' | translate}}</label>
+                            <input type="text" placeholder="{{'street' | translate}}" class="form-control" id="address" name="address"
+                                [(ngModel)]="entity.address" #street="ngModel">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>{{'HouseNumber' | translate}}</label>
+                            <input type="text" placeholder="{{'HouseNumber' | translate}}" class="form-control" id="number" name="number"
+                                [(ngModel)]="entity.number" #houseNumber="ngModel">
+                        </div>
+                    </div>
+                </div>
+            </pgcard>
+
+            <pgcard MinimalHeader="true">
+                <ng-template #CardTitle>
+                    {{'Detail' | translate}}
+                </ng-template>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'entity.passportnumber' | translate}}</label>
+                                <input type="text" placeholder="" class="form-control" id="passportNumber"
+                                    name="passportNumber" [(ngModel)]="entity.passportNumber" #passportNumber="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'date of issue' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="passportDate" [(ngModel)]="entity.passportDate"
+                                        [Format]="'DD-MM-YYYY'" [Placeholder]="'Выберите дату...'">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Issued by' | translate}}</label>
+                                <input type="text" placeholder="" class="form-control" id="passportCompany"
+                                    name="passportCompany" [(ngModel)]="entity.passportCompany"
+                                    #passportCompany="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'dateOfBirth' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="birthdate" [(ngModel)]="entity.birthdate"
+                                        [Format]="'DD-MM-YYYY'" [Placeholder]="'Choose...' | translate">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'drivinglicense' | translate}}</label>
+                                <input type="text" placeholder="" class="form-control" id="drivingLicense"
+                                    name="drivingLicense" [(ngModel)]="entity.drivingLicense" #drivingLicense="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'emergencycontact' | translate}}</label>
+                                <input type="text" placeholder="" class="form-control" id="emergencyContact"
+                                    name="emergencyContact" [(ngModel)]="entity.emergencyContact"
+                                    #emergencyContact="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- <div class="checkbox check-primary">
+                                <input type="checkbox" id="receiveEmails" checked="checked" name="receiveEmails"
+                                    [(ngModel)]="entity.receiveEmails">
+                                <label for="receiveEmails">
+                                    {{'Receive emails' | translate}}
+                                </label>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'internalremark' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="description" name="description"
+                                    placeholder="..." [(ngModel)]="entity.description" #text="ngModel">
+                                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </pgcard>
+        </pgcard>
+    </form>
+</div>
+
+<rent-tree-folders [entityType]="entityType" (onSelect)="setFolder($event)"></rent-tree-folders>

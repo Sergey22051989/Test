@@ -1,0 +1,108 @@
+<div class="full-height">
+    <div class="jumbotron no-margin">
+        <div class="container-fluid">
+            <div class="inner" pg-parallax>
+                <h4>{{'My schedule' | translate}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-height pb-51">
+        <jqxScheduler [theme]="'metro'" [localization]="localization" #myScheduler [width]="'100%'" [height]="'100%'"
+            [date]="date" [source]="dataAdapter" [dayNameFormat]="'abbr'" [view]="'weekView'" [toolbarHeight]="34"
+            [scrollBarSize]="7" [contextMenu]="false" [editDialog]="false" [resources]="resources" [views]="views"
+            [appointmentDataFields]="appointmentDataFields" (onCellClick)="showEditDialog($event)"
+            (onAppointmentClick)="onClickEvent($event)" [showLegend]="false">
+        </jqxScheduler>
+    </div>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #calendarCellModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="calendarCellModal" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="calendarCellModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span
+                        class="semi-bold">{{ (calendarFormData.id ? 'form.edit' : 'form.add') | translate }}</span>
+                    {{'Availability' | translate}}</h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmitCalendarData(form)">
+                <input type="hidden" [(ngModel)]="calendarFormData.id" name="id">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Action' | translate}} <span class="text-danger">*</span></label>
+                                <pg-select style="width: 100%;" [(ngModel)]="calendarFormData.action" id="action"
+                                    name="action" [FirstDefault]="true" [PlaceHolder]="''" [required]="true">
+                                    <pg-option *ngFor="let action of timeEventType | enumToArray"
+                                        [Label]="action | translate" [Value]="action">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{'Since' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker (ngModelChange)="calendarFormData.start=$event;_startValueChange()"
+                                        Placeholder="С" [ngModel]="calendarFormData.start" name="start"
+                                        [ShowTime]="true" [DisabledDate]="_disabledStartDate"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{'To' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker (ngModelChange)="calendarFormData.end=$event;_endValueChange()"
+                                        Placeholder="По" [ngModel]="calendarFormData.end" name="end" [ShowTime]="true"
+                                        [DisabledDate]="_disabledEndDate" [Format]="'DD-MM-YYYY HH:mm'"
+                                        [required]="true"></pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'entity.description' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="comment" name="comment" placeholder="..."
+                                    [(ngModel)]="calendarFormData.comment" #text="ngModel">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons"
+                        [disabled]="form.invalid || buildProgress">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" [disabled]="buildProgress"
+                        (click)="calendarCellModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

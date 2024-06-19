@@ -1,0 +1,34 @@
+<div class="full-height pb-105">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'" [panels]="
+        [{  size: 350, min: 300 }, { size: '100%', collapsible: false }]">
+        <div class="splitter-panel">
+            <rent-equipments-catalog [currentEquipment]="parentId" (onAddRow)="addRow($event)">
+            </rent-equipments-catalog>
+        </div>
+        <div class="splitter-panel">
+            <div class="full-height pb-43">
+                <div class="container-fluid bg-white p-2">
+                    <div *ngIf="!removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                            <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                        </button>
+                        <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+
+                <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+                    [source]="source" [columns]="tableSource.columns" [scrollbarsize]="7" [columnsresize]="true"
+                    [sortable]="true" [autoshowfiltericon]="true" [enabletooltips]="false" [selectionmode]="selectMode"
+                    (onRowselect)="onRowSelect($event)">
+                </jqxGrid>
+            </div>
+        </div>
+    </jqxSplitter>
+</div>

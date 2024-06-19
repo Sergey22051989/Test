@@ -1,0 +1,298 @@
+<div class="jumbotron no-margin">
+    <div class="container-fluidcontainer-fixed-lg sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax="">
+            <div class="container-fluid container-fixed-lg sm-p-l-0 sm-p-r-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/vehicles">{{'Vehicles' | translate}}</a></li>
+                    <li class="breadcrumb-item active">{{(entity?.id ? "edit" : "form.add") | translate }} {{'transport' | translate}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #staffDataForm="ngForm" (ngSubmit)="onSubmit(staffDataForm)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/vehicles" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="staffDataForm.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>{{'folder' | translate}} <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="hidden" name="folderId" [(ngModel)]="entity.folderId">
+                                <input class="form-control input-sm" name="folderName" [(ngModel)]="entity.folderName"
+                                    type="text" placeholder="..." disabled required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-sm btn-primary" (click)="showFoldersModal()">
+                                        <i class="fa fa-folder"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        <i class="fa fa-info"></i> {{'data' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                <label class="label-sm">{{'car model' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" placeholder="{{'car model' | translate}}" class="form-control" id="name"
+                                    name="name" [(ngModel)]="entity.name" #name="ngModel" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group"
+                                [class.has-error]="registrationNumber.invalid && (registrationNumber.dirty || registrationNumber.touched)">
+                                <label class="label-sm">{{'Register sign' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" placeholder="{{'Register sign' | translate}}" class="form-control"
+                                    id="registrationNumber" name="registrationNumber"
+                                    [(ngModel)]="entity.registrationNumber" #registrationNumber="ngModel" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Date of technical inspection' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="motDate" [(ngModel)]="entity.motDate"
+                                        [Placeholder]="'Укажите дату'"></pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Insurance (validity period)' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="insuranceDate" [(ngModel)]="entity.insuranceDate"
+                                        [Placeholder]="'Укажите дату'"></pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="deployedMultipleTimesSimultaneously" checked="checked"
+                                    name="deployedMultipleTimesSimultaneously"
+                                    [(ngModel)]="entity.deployedMultipleTimesSimultaneously">
+                                <label for="deployedMultipleTimesSimultaneously">
+                                    Может быть использовано одновременно несколько раз
+                                </label>
+                            </div>
+                        </div>
+                    </div> -->
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'Detail' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="displayInPlanner" checked="checked" name="displayInPlanner"
+                                    [(ngModel)]="entity.displayInPlanner">
+                                <label for="displayInPlanner">
+                                    {{'displayinplanner' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Fuel consumption per 100 km' | translate}}</label>
+                                <input type="text" placeholder="0" class="form-control" id="dayilCosts"
+                                    name="dayilCosts" [(ngModel)]="entity.dayilCosts" #dayilCosts="ngModel" numbersOnly [numType]="'decimal'">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'load capacity' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="loadCapacity"
+                                        name="loadCapacity" [(ngModel)]="entity.loadCapacity" #loadCapacity="ngModel" numbersOnly [numType]="'decimal'">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 65px;" id="loadCapacityUnit" name="loadCapacityUnit"
+                                            [PlaceHolder]="'Выбрать...'" [(ngModel)]="entity.loadCapacityUnit"
+                                            [FirstDefault]="true">
+                                            <pg-option *ngFor="let item of weightUnit | enumToArray"
+                                                [Label]="item | translate" [Value]="item">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Body capacity' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="" class="form-control" id="loadingSurface"
+                                        name="loadCapacity" [(ngModel)]="entity.loadingSurface" numbersOnly [numType]="'decimal'"
+                                        #loadingSurface="ngModel">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            м<sup>3</sup>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Number of passenger seats' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="seats" name="seats"
+                                        [(ngModel)]="entity.seats" #seats="ngModel" numbersOnly>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-users"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'width' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="width" name="width"
+                                        [(ngModel)]="entity.width" #width="ngModel" numbersOnly [numType]="'decimal'">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 65px;" id="widthUnit" name="widthUnit"
+                                            [PlaceHolder]="'Выбрать...'" [(ngModel)]="entity.widthUnit"
+                                            [FirstDefault]="true">
+                                            <pg-option *ngFor="let item of lenghtUnits | enumToArray"
+                                                [Label]="item | translate" [Value]="item">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'length' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="length" name="length"
+                                        [(ngModel)]="entity.length" #length="ngModel" numbersOnly [numType]="'decimal'">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 65px;" id="lengthUnit" name="lengthUnit"
+                                            [PlaceHolder]="'Выбрать...'" [(ngModel)]="entity.lengthUnit"
+                                            [FirstDefault]="true">
+                                            <pg-option *ngFor="let item of lenghtUnits | enumToArray"
+                                                [Label]="item | translate" [Value]="item">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'height' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="height" name="height"
+                                        [(ngModel)]="entity.height" #height="ngModel" numbersOnly [numType]="'decimal'">
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 65px;" id="heightUnit" name="heightUnit"
+                                            [PlaceHolder]="'Выбрать...'" [(ngModel)]="entity.heightUnit"
+                                            [FirstDefault]="true">
+                                            <pg-option *ngFor="let item of lenghtUnits | enumToArray"
+                                                [Label]="item | translate" [Value]="item">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'entity.remark' | translate}}
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isPublic" checked="checked" name="isPublic"
+                                    [(ngModel)]="entity.isPublic">
+                                <label for="isPublic">
+                                    {{'Public (for all)' | translate}}
+                                </label>
+                            </div>
+
+                            <div *ngIf="!entity.isPublic"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>{{'Visible to' | translate}}</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'"
+                                    [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'" [Multiple]="true"
+                                    [(ngModel)]="entity.crewMembers" name="crewMembers" [NotFoundContent]="'Not found'"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName"
+                                        [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <textarea rows="3" class="form-control" id="description" name="description"
+                                    placeholder="{{'entity.remark' | translate}}" [(ngModel)]="entity.description"
+                                    #description="ngModel">
+                                        </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+        </pgcard>
+    </form>
+</div>
+
+<rent-tree-folders [entityType]="entityType" (onSelect)="setFolder($event)"></rent-tree-folders>

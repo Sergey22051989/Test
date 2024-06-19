@@ -1,0 +1,196 @@
+<!-- WRAP LAYOUT IF BOXED -->
+<div class="container" *ngIf="_boxed; else basicLayoutBlock">
+	<ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</div>
+<ng-template #basicLayoutBlock>
+	<ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</ng-template>
+
+<!-- YOUR LAYOUT CONTENT GOES INSIDE HERE -->
+<ng-template #contentTpl>
+	<!-- PAGE SIDEBAR -->
+	<pg-sidebar>
+		<!-- 		<ng-template #sideBarOverlay>
+			<div class="row">
+				<div class="col-xs-6 no-padding">
+					<a href="javascript:void(0)" class="p-l-40"><img src="assets/img/demo/social_app.svg" alt="socail">
+					</a>
+				</div>
+				<div class="col-xs-6 no-padding">
+					<a href="javascript:void(0)" class="p-l-10"><img src="assets/img/demo/email_app.svg" alt="socail">
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-6 m-t-20 no-padding">
+					<a href="javascript:void(0)" class="p-l-40"><img src="assets/img/demo/calendar_app.svg"
+							alt="socail">
+					</a>
+				</div>
+				<div class="col-xs-6 m-t-20 no-padding">
+					<a href="javascript:void(0)" class="p-l-10"><img src="assets/img/demo/add_more.svg" alt="socail">
+					</a>
+				</div>
+			</div>
+		</ng-template> -->
+		<ng-template #sideBarHeader>
+			<!-- <img [src]="logo$ | async" alt="logo" class="brand" pgRetina height="45"> -->
+			<!-- 	<span class="font-arial no-margin text-uppercase bold fs-21">prorent24</span> -->
+			<div class="sidebar-header-controls text-right">
+				<!-- <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20 hidden-md-down"
+					[class.active]="_menuDrawerOpen" (click)="toggleMenuDrawer()"><i class="fa fa-angle-down fs-16"></i>
+				</button> -->
+				<!-- <button type="button"
+					class="btn btn-link d-lg-inline-block d-xlg-inline-block d-md-inline-block d-sm-none d-none ml-3"
+					data-toggle-pin="sidebar" (click)="toggleMenuPin()"><i class="fa fs-12"></i>
+				</button>  -->
+			</div>
+		</ng-template>
+		<ng-template #menuItems>
+			<pg-menu-items [Items]="menuLinks">
+			</pg-menu-items>
+		</ng-template>
+	</pg-sidebar>
+	<!-- PAGE CONTAINER -->
+	<page-container>
+		<pg-header [boxed]="_boxed">
+			<!-- START MOBILE SIDEBAR TOGGLE -->
+			<a href="javascript:void(0);" class="btn-link toggle-sidebar d-lg-none pg pg-menu"
+				(click)="toggleMobileSidebar()"></a>
+			<!-- END MOBILE SIDEBAR TOGGLE -->
+			<div class="">
+				<!-- START EMAIL MOBILE TOGGLE -->
+				<a href="javascript:void(0);" class="toggle-secondary-sidebar" (click)="toggleSecondarySideBar()"
+					*ngIf="_layoutOption === 'email'">Inbox <span class="text-info">(12)</span> <span
+						class="caret"></span></a>
+				<!-- END EMAIL MOBILE TOGGLE -->
+
+				<div class="brand inline" [class.d-none]="_layoutOption === 'email'">
+					<img [src]="logo$ | async" alt="logo" pgRetina [src]="logo$ | async" height="40">
+				</div>
+				<!-- START NOTIFICATION LIST -->
+				<ul
+					class="d-lg-inline-block d-none notification-list no-margin d-lg-inline-block b-grey b-l b-r no-style p-l-30 p-r-20">
+
+					<li class="p-r-10 inline">
+						<div class="dropdown" dropdown>
+							<a href="javascript:;" id="notification-center" class="header-icon fa fa-bell-o"
+								dropdownToggle>
+								<span *ngIf="(lastNotifications$ | async)?.length > 0" class="bubble"></span>
+							</a>
+							<!-- START Notification Dropdown -->
+							<div *dropdownMenu class="dropdown-menu notification-toggle">
+								<!-- START Notification -->
+								<div class="notification-panel">
+									<div class="notification-body scrollable">
+										<div *ngFor="let n of lastNotifications$ | async"
+											class="notification-item unread clearfix">
+											<div class="heading open">
+												<a routerLink="/notifications" class="pull-left">
+													<i class="fa fa-info-circle fs-16 m-r-10 text-complete"></i>
+													<span class="bold text-complete">{{n.theme}}</span>
+													<span
+														class="fs-12 m-l-10">{{(n.message.length > 27) ? (n.message | slice:0:27)+'...' : n.message}}</span>
+												</a>
+												<span class="pull-right time">{{n.creationDate | date:"HH:mm" }}</span>
+											</div>
+											<div class="option">
+												<a href="javascript:void(0)" class="mark"></a>
+											</div>
+										</div>
+
+										<div *ngIf="(lastNotifications$ | async)?.length === 0"
+											class="notification-item clearfix">
+											<div class="heading text-center text-info text-uppercase">
+												Нет новых уведомлений
+											</div>
+										</div>
+									</div>
+
+									<!-- START Notification Footer-->
+									<div class="notification-footer text-center">
+										<a routerLink="/notifications" class="btn btn-link btn-default">Все
+											уведомления</a>
+									</div>
+									<!-- START Notification Footer-->
+								</div>
+								<!-- END Notification -->
+							</div>
+							<!-- END Notification Dropdown -->
+						</div>
+					</li>
+
+					<!-- <ng-template [ngIf]="_layoutOption != 'email'">
+						<li class="p-r-10 inline">
+							<a href="javascript:void(0)" class="header-icon pg pg-link"></a>
+						</li>
+						<li class="p-r-10 inline">
+							<a href="javascript:void(0)" class="header-icon pg pg-thumbs"></a>
+						</li>
+					</ng-template>  -->
+
+					<!-- <ng-template [ngIf]="_layoutOption == 'email'">
+						<a href="javascript:void(0)" id="mark-email" class="mark-email m-l-20"><i
+								class="fa fa-pencil fs-16"></i></a>
+					</ng-template> -->
+				</ul>
+			</div>
+			<div class="d-flex align-items-center">
+				<!-- START User Info-->
+				<div class="pull-left p-r-10 fs-14 font-heading d-lg-block d-none">
+					<span class="semi-bold">{{(user$ | async)?.name}} {{(user$ | async)?.surname}}</span>
+				</div>
+				<div class="dropdown pull-right d-lg-block d-none" dropdown>
+					<button class="profile-dropdown-toggle" type="button" dropdownToggle id="profileDropdown">
+						<span class="thumbnail-wrapper d32 circular inline">
+							<img *ngIf="!(user$ | async)?.profileImage" src="assets/img/user-purple.png" alt="" pgRetina
+								width="32" height="32">
+							<img *ngIf="(user$ | async)?.profileImage" [src]="(user$ | async)?.profileImage" alt=""
+								pgRetina width="32" height="32">
+						</span>
+					</button>
+					<div class="dropdown-menu dropdown-menu-right profile-dropdown" *dropdownMenu role="menu">
+						<a routerLink="/account/profile" class="dropdown-item"><i class="fs-13 fa fa-user-circle"></i>
+							Профиль</a>
+						<a routerLink="/logout" class="clearfix bg-master-lighter dropdown-item">
+							<span class="pull-left">Выйти</span>
+							<span class="pull-right"><i class="fs-13 pg pg-power"></i></span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</pg-header>
+		<div class="page-content-wrapper {{_pageContainerClass}}">
+			<!-- START PAGE CONTENT -->
+			<div class="content {{_contentClass}}">
+				<router-outlet></router-outlet>
+
+				<!-- NAV-TABS -->
+				<div class="route-tabs">
+					<nav *ngIf="tabService.tabs.length > 0" mat-tab-nav-bar>
+						<a mat-tab-link *ngFor="let tab of tabService.tabs; let index = index"
+							[routerLink]="tab.routerLink" routerLinkActive #rla="routerLinkActive"
+							[active]="rla.isActive" [routerLinkActiveOptions]="{exact:true}">
+							{{(tab.label.length > 18) ? (tab.label | slice:0:18)+'...' : tab.label}}
+							<span class="ml-2 fa fa-times" (click)="closeTab(index, $event)"></span>
+						</a>
+					</nav>
+				</div>
+			</div>
+
+			<!-- START COPYRIGHT -->
+			<ng-template [ngIf]="_footer">
+				<div class=" container-fluid container-fixed-lg footer">
+					<div class="copyright sm-text-center">
+						<p class="small no-margin pull-left sm-pull-reset">
+							<span class="hint-text">Copyright &copy; {{current_year}}</span>&nbsp;<span
+								class="font-montserrat">Prorent24</span>.&nbsp;<span class="hint-text">All rights
+								reserved.</span>
+						</p>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</ng-template>
+		</div>
+	</page-container>
+</ng-template>

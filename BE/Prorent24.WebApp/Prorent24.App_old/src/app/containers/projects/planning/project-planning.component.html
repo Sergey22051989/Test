@@ -1,0 +1,262 @@
+<div class="full-height pb-105">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.mainSplitter">
+        <div class="splitter-panel">
+            <rent-crew-and-vehicles [selectMode]="'checkbox'" [checkedObserve]="true" (changeTab)="changeTab($event)"
+                (checkedRows)="onCheckedFunctions($event)">
+            </rent-crew-and-vehicles> <!-- (doubleClickRow)="onSelectFunction($event)"  -->
+        </div>
+        <div class="splitter-panel">
+            <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+                [orientation]="'horizontal'" [panels]="panelOptions.nestedSplitter" (onExpanded)="showTimeline = true"
+                (onCollapsed)="showTimeline = false" (onResize)="sheduler.updateHeight()">
+                <div class="splitter-panel">
+                    <div class="full-height pb-43">
+                        <div class="container-fluid bg-white p-2">
+
+                            <!-- <div class="inline dropdown" dropdown>
+                                <a class="btn btn-xs btn-defaultdropdown-toggle" href="javascript:void(0);"
+                                    id="navbarDropdownMenuLink" dropdownToggle aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h ml-1 mr-1"></i>
+                                </a>
+                                <div class="dropdown-menu" *dropdownMenu aria-labelledby="navbarDropdownMenuLink">
+                                    <span class="ml-2 hint-text text-uppercase small">Выбранные функции</span>
+                                    <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-calendar"></i>
+                                        Планирование выбранных членов персонала
+                                    </a>
+                                    <div class="divider"></div>
+                                    <a class="dropdown-item text-danger" href="javascript:void(0)"
+                                        (click)="onDeleteRows()"><i class="fa fa-trash"></i>
+                                        Удалить
+                                    </a>
+                                </div>
+                            </div> -->
+
+                            <div class="pull-right">
+                                <!-- <button class="btn btn-xs btn-white"><i class="fa fa-envelope-o"></i></button> -->
+                                <!-- <button class="btn btn-xs btn-white ml-2"><i class="fa fa-users"></i></button> -->
+                                <!--  <button class="btn btn-xs btn-white ml-2"><i class="fa fa-sitemap"></i></button> -->
+                                <button class="btn btn-xs btn-white ml-2" (click)="toggleTimeline()"
+                                    matTooltip="{{'Open / Close Timeline' | translate}}"><i
+                                        class="fa fa-clock-o"></i></button>
+                                <!-- <button class="btn btn-xs btn-white ml-2"><i class="fa fa-list"></i></button> -->
+                            </div>
+
+                            <div *ngIf="!removeArrayMode">
+                                <button class="btn btn-xs btn-primary mr-1" (click)="onPlanning()"
+                                    [disabled]="!selected_entity || checkedFunctions.functions.length === 0">{{'To plan' | translate}}</button>
+                                <button class="btn btn-info btn-xs mr-1"
+                                    (click)="onEditRowModal(selected_entity?.id, true)" [disabled]="!canAction"
+                                    matTooltip="{{'form.edit' | translate}}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button *ngIf="gridPermission.delete" class="btn btn-danger btn-xs mr-1"
+                                    matTooltip="{{'form.delete' | translate}}" (click)="changeRemoveArrayMode()">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <div *ngIf="removeArrayMode">
+                                <button class="btn btn-danger btn-xs mr-1"
+                                    (click)="onDeleteRows()">
+                                    <i class="fa fa-trash"></i> {{'form.confirm' | translate}}
+                                </button>
+                                <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                                    {{'form.cancel' | translate}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <jqxTreeGrid #treeGrid [theme]="'metro'" [localization]="localization" [width]="'100%'"
+                            [height]="'100%'" [source]="source" [selectionMode]="selectMode"
+                            [columns]="tableSource.columns" [sortable]="true" [scrollBarSize]="7"
+                            (onRowSelect)="onRowSelect($event, false, true)" [columnsResize]="true"
+                            [hierarchicalCheckboxes]="true" [checkboxes]="true"
+                            (onRowDoubleClick)="onEditRowModal(selected_entity?.id, true, false, true)">
+                        </jqxTreeGrid>
+                    </div>
+                </div>
+                <div class="splitter-panel">
+                    <rent-scheduler-component #sheduler [heightSpec]="'Parent100Pct'" [startDate]="shedulerDate"
+                        [source]="shedulerAvailabilitiesSource"></rent-scheduler-component>
+                </div>
+            </jqxSplitter>
+        </div>
+    </jqxSplitter>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    (onShow)="onShowEditFunctionModal($event)" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'form.edit' | translate}}</span> {{'timetable' | translate}} 
+                </h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <input type="hidden" id="entityId" name="entityId" [(ngModel)]="entity.entityId">
+                <input type="hidden" id="functionId" name="functionId" [(ngModel)]="entity.functionId">
+                <div class="modal-body">
+                    <p class="small-text">
+                        <i class="fa" [ngClass]="entity.functionType == functionType.crew ? 'fa-user' : ''"></i>
+                        <i class="fa" [ngClass]="entity.functionType == functionType.transport ? 'fa-truck' : ''"></i>
+                    </p>
+                    <div *ngIf="entity.functionType == functionType.crew">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="checkbox check-primary">
+                                    <input type="checkbox" id="projectLeader" checked="checked" name="projectLeader"
+                                        [(ngModel)]="entity.projectLeader">
+                                    <label for="projectLeader">
+                                        {{'Project Manager' | translate}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{'Company employee rate' | translate}} <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <pg-select style="width: 100%;" [(ngModel)]="entity.rateType" id="rateType"
+                                            name="rateType" [PlaceHolder]="'Выбрать...'" required>
+                                            <pg-option *ngFor="let unit of crewMemberRateType | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="entity.rateType === crewMemberRateType.priceAgreement" class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="label-sm">{{'Cost' | translate}} <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="costs" name="costs"
+                                        [(ngModel)]="entity.costs" #costs="ngModel" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="entity.rateType === crewMemberRateType.crewRate" class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{'Employee Rates' | translate}} <span class="text-danger">*</span></label>
+                                    <pg-select style="width: 100%;" [(ngModel)]="entity.crewMemberRateId"
+                                        id="crewMemberRateId" name="crewMemberRateId" [PlaceHolder]="'Выбрать...'"
+                                        [required]="true">
+                                        <pg-option *ngFor="let item of crewMemberRates" [Label]="item.name"
+                                            [Value]="item.id">
+                                        </pg-option>
+                                    </pg-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{'travelduration' | translate}}</label>
+                                    <div class="input-group">
+                                        <pg-select style="width: 100%;" [(ngModel)]="entity.transportType"
+                                            id="transportType" name="transportType" [PlaceHolder]="'Выбрать...'">
+                                            <pg-option *ngFor="let unit of transportType | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="entity.functionType == functionType.transport">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>{{'Vehicles' | translate }}</label>
+                                    <div class="input-group">
+                                        <pg-select style="width: 100%;" [(ngModel)]="entity.transportType"
+                                            id="transportType" name="transportType" [PlaceHolder]="'Выбрать...'">
+                                            <pg-option *ngFor="let unit of transportType | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group m-0">
+                                <label class="m-0">{{'planning period' | translate}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'from' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker
+                                        (ngModelChange)="entity.planFrom=$event;_startValueChange('planFrom', 'planUntil')"
+                                        Placeholder="Начало" [ngModel]="entity.planFrom" name="planFrom"
+                                        [ShowTime]="true" [DisabledDate]="_disabledStartDate"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'The ending' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker
+                                        (ngModelChange)="entity.planUntil=$event;_endValueChange('planFrom', 'planUntil')"
+                                        Placeholder="Окончание" [ngModel]="entity.planUntil" name="planUntil"
+                                        [ShowTime]="true" [DisabledDate]="_disabledEndDate"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'description' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="remark" name="remark" placeholder="..."
+                                    [(ngModel)]="entity.remark" #details="ngModel">
+                                    </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

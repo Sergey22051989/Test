@@ -1,0 +1,29 @@
+<div bsModal #columnModal="bs-modal" class="modal fade slide-right" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content-wrapper">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <button type="button" class="close" (click)="columnModal.hide()" aria-hidden="true">
+                        <i class="pg pg-close fs-14"></i>
+                    </button>
+                    <h4 class="p-b-5"><span class="semi-bold">Дополнительные</span> данные</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="additional-column-tree">
+                        <jqxTree #columnTree [theme]="'metro'" [width]="'100%'" [hasThreeStates]="true"
+                            [source]="records" [checkboxes]="true"></jqxTree>
+                    </div>
+
+                    <div class="text-center pt-5 btn-group">
+                        <button type="button" class="btn btn-xs btn-primary btn-cons" (click)="addColumn()">
+                            {{'form.add' | translate}}
+                        </button>
+                        <button type="button" class="btn btn-xs btn-cons" (click)="columnModal.hide()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

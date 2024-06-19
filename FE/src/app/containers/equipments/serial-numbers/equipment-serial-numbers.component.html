@@ -1,0 +1,44 @@
+<div class="card card-transparent">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <pgcard MinimalHeader="true" HeaderClass="separator">
+                    <ng-template #CardTitle>
+                        <div *ngIf="!removeArrayMode">
+                            <a routerLink="create" class="link-button">
+                                <button type="button" class="btn btn-primary btn-xs mr-1">
+                                    <i class="fa fa-plus"></i> {{'form.add' | translate}}
+                                </button>
+                            </a>
+                            <a routerLink="edit/{{selected_entity?.id}}" class="link-button">
+                                <button class="btn btn-info btn-xs mr-1" [disabled]="!canAction">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </a>
+                            <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="removeArrayMode">
+                            <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                                <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                            </button>
+                            <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                                {{'form.cancel' | translate}}
+                            </button>
+                        </div>
+                    </ng-template>
+
+                    <div class="pt-3">
+                        <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'"
+                            [autoheight]="true" [source]="source" [columns]="tableSource.columns" [columnsresize]="true"
+                            [sortable]="true" [filterable]="true" [filter]="true" [autoshowfiltericon]="true"
+                            [enabletooltips]="false" [selectionmode]="selectMode" [columnsreorder]="true"
+                            (onRowselect)="onRowSelect($event)" (onRowdoubleclick)="openEditForm()">
+                        </jqxGrid>
+                    </div>
+                </pgcard>
+            </div>
+        </div>
+    </div>
+</div>

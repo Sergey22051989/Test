@@ -1,0 +1,1 @@
+﻿ALTER TABLE "AspNetUsers" ADD "Removed" BOOLEAN DEFAULT 0;

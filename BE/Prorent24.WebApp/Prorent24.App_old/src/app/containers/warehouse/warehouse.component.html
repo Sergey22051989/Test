@@ -1,0 +1,311 @@
+<div class="full-height">
+    <div class="jumbotron no-margin">
+        <div class="container-fluid">
+            <div class="inner" pg-parallax>
+                <h4>{{'Warehouse' | translate}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid bg-white p-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="input-group date" style="max-width: 340px;">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-sm" (click)="changeBtnDate('today')"
+                            [ngClass]="dateFilterDate == todayDate ? 'btn-primary' : 'btn-default'">{{'today' | translate}}</button>
+                        <button class="btn btn-sm" (click)="changeBtnDate('tomorrow')"
+                            [ngClass]="dateFilterDate == tomorrowDate ? 'btn-primary' : 'btn-default'">{{'dashboard.tomorrow' | translate}}</button>
+                    </div>
+                    <pg-datepicker name="dateFilter" [(ngModel)]="dateFilter" [Format]="'DD-MM-YYYY'"
+                        (ngModelChange)="changeDateFilter();"></pg-datepicker>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-calendar ml-2 mr-2"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-5 text-right">
+                <!-- <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-sm btn-default"><i class="fa fa-qrcode"></i> Сканирование</button>
+                    </div>
+                    <input class="form-control input-sm" name="searchText" type="text" placeholder="Поиск проекта...">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-2">
+        <button type="button" class="btn btn-link font-montserrat text-uppercase"
+            (click)="isCollapsedTransport = !isCollapsedTransport" [attr.aria-expanded]="!isCollapsedTransport"
+            aria-controls="collapseBasic">{{'crew' | translate}}
+            <i class="ml-2 pg" [ngClass]="isCollapsedTransport ? 'pg-arrow_minimize' : 'pg-arrow_maximize'"></i>
+        </button>
+
+        <div id="collapseBasic" [collapse]="isCollapsedTransport" style="min-height: 200px;">
+            <rent-scheduler-component [startDate]="dateFilter" [source]="sheduleCrewSource">
+            </rent-scheduler-component>
+        </div>
+    </div>
+
+    <div class="pt-2">
+        <button type="button" class="btn btn-link font-montserrat text-uppercase"
+            (click)="isCollapsedCrew = !isCollapsedCrew" [attr.aria-expanded]="!isCollapsedCrew"
+            aria-controls="collapseBasic">{{'Vehicles' | translate}}
+            <i class="ml-2 pg" [ngClass]="isCollapsedCrew ? 'pg-arrow_minimize' : 'pg-arrow_maximize'"></i>
+        </button>
+
+        <div id="collapseBasic" [collapse]="isCollapsedCrew" style="min-height: 200px;">
+            <rent-scheduler-component [startDate]="dateFilter" [source]="sheduleVehiclesSource">
+            </rent-scheduler-component>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="container-fluid container-fixed-lg pt-3">
+        <div class="row">
+            <div class="col-md-3">
+                <pgcard MinimalHeader="true" [AdditionalClasses]="'bg-light'">
+                    <ng-template #CardTitle>
+                        {{'To wrap up' | translate}}
+                    </ng-template>
+
+                    <div cdkDropList #packList="cdkDropList" [cdkDropListConnectedTo]="[preppedList, onlocationList]"
+                        [cdkDropListData]="tasks.pack" [id]="'pack'" (cdkDropListDropped)="drop($event)"
+                        class="dnd-container-list">
+                        <div *ngIf="tasks.pack.length == 0" class="alert alert-warning alert-dismissible">
+                            {{'No packaging projects' | translate}}
+                        </div>
+                        <div class="dnd-card-box" *ngFor="let item of tasks.pack" [cdkDragData]="item" cdkDrag>
+                            <div class="dnd-placeholder" *cdkDragPlaceholder></div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <a routerLink="/projects/edit/{{item.id}}/data"
+                                            class="btn btn-sm btn-link m-0 p-0">
+                                            {{item.title}}
+                                        </a>
+                                    </div>
+                                    <div class="card-controls">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-arrows text-muted"></i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="small">{{item.resource}}</p>
+                                            <p class="small">{{'Beginning of the planning period:' | translate}}
+                                                {{item.startPlaning | date:'short'}}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <qrcode *ngIf="item.code" [ngClass]="'qrcode'" [qrdata]="item.code"
+                                                [size]="60" [level]="'M'">
+                                            </qrcode>
+                                            <div class="pt-2">
+                                                <a routerLink="booking/{{item.id}}">
+                                                    <button
+                                                        class="btn btn-xs btn-block btn-info">{{'Move equipment' | translate}}</button>
+                                                </a>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+
+            <div class="col-md-3">
+                <pgcard MinimalHeader="true" [AdditionalClasses]="'bg-light'">
+                    <ng-template #CardTitle>
+                        {{'Collected' | translate}}
+                    </ng-template>
+
+                    <div cdkDropList #preppedList="cdkDropList" [cdkDropListConnectedTo]="[packList, onlocationList]"
+                        [cdkDropListData]="tasks.prepped" [id]="'prepped'" (cdkDropListDropped)="drop($event)"
+                        class="dnd-container-list">
+                        <div *ngIf="tasks.prepped.length == 0" class="alert alert-warning alert-dismissible">
+                            {{'No projects collected' | translate}}
+                        </div>
+                        <div class="dnd-card-box" *ngFor="let item of tasks.prepped" [cdkDragData]="item" cdkDrag>
+                            <div class="dnd-placeholder" *cdkDragPlaceholder></div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <a routerLink="/projects/edit/{{item.id}}/data"
+                                            class="btn btn-sm btn-link m-0 p-0">
+                                            {{item.title}}
+                                        </a>
+                                    </div>
+                                    <div class="card-controls">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-arrows text-muted"></i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="small">{{item.resource}}</p>
+                                            <p class="small">{{'Beginning of the planning period:' | translate}}
+                                                {{item.startPlaning | date:'short'}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <qrcode *ngIf="item.code" [ngClass]="'qrcode'" [qrdata]="item.code"
+                                                [size]="60" [level]="'M'">
+                                            </qrcode>
+                                            <div class="pt-2">
+                                                <a routerLink="booking/{{item.id}}">
+                                                    <button
+                                                        class="btn btn-xs btn-block btn-info">{{'Move equipment' | translate}}</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+
+            <div class="col-md-3">
+                <pgcard MinimalHeader="true" [AdditionalClasses]="'bg-light'">
+                    <ng-template #CardTitle>
+                        {{'entity.transportationtype' | translate}}
+                    </ng-template>
+
+                    <div cdkDropList #onlocationList="cdkDropList" [cdkDropListConnectedTo]="[preppedList, preppedList]"
+                        [cdkDropListData]="tasks.onLocation" [id]="'onlocation'" (cdkDropListDropped)="drop($event)"
+                        class="dnd-container-list">
+                        <div *ngIf="tasks.onLocation.length == 0" class="alert alert-warning alert-dismissible">
+                            {{'No transport projects' | translate}}
+                        </div>
+                        <div class="dnd-card-box" *ngFor="let item of tasks.onLocation" [cdkDragData]="item" cdkDrag>
+                            <div class="dnd-placeholder" *cdkDragPlaceholder></div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <a routerLink="/projects/edit/{{item.id}}/data"
+                                            class="btn btn-sm btn-link m-0 p-0">
+                                            {{item.title}}
+                                        </a>
+                                    </div>
+                                    <div class="card-controls">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-arrows text-muted"></i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="small">{{item.resource}}</p>
+                                            <p class="small">{{'Beginning of the planning period:' | translate}}
+                                                {{item.startPlaning | date:'short'}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <qrcode *ngIf="item.code" [ngClass]="'qrcode'" [qrdata]="item.code"
+                                                [size]="60" [level]="'M'">
+                                            </qrcode>
+                                            <div class="pt-2">
+                                                <a routerLink="booking/{{item.id}}">
+                                                    <button
+                                                        class="btn btn-xs btn-block btn-info">{{'Move equipment' | translate}}</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+
+            <div class="col-md-3">
+                <pgcard MinimalHeader="true" [AdditionalClasses]="'bg-light'">
+                    <ng-template #CardTitle>
+                        {{'entity.inUse' | translate}}
+                    </ng-template>
+
+                    <div cdkDropList #inUseList="cdkDropList" [cdkDropListConnectedTo]="[]"
+                        [cdkDropListData]="tasks.inUse" [id]="'inUse'" (cdkDropListDropped)="drop($event)"
+                        class="dnd-container-list">
+                        <div class="dnd-card-box" *ngIf="tasks.inUse.length == 0"
+                            class="alert alert-warning alert-dismissible">
+                            {{'No projects in status - inuse' | translate}}
+                        </div>
+                        <div class="dnd-card-box" *ngFor="let item of tasks.inUse" [cdkDragData]="item" cdkDrag>
+                            <div class="dnd-placeholder" *cdkDragPlaceholder></div>
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <a routerLink="/projects/edit/{{item.id}}/data"
+                                            class="btn btn-sm btn-link m-0 p-0">
+                                            {{item.title}}
+                                        </a>
+                                    </div>
+                                    <div class="card-controls">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-arrows text-muted"></i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="small">{{item.resource}}</p>
+                                            <p class="small">{{'Beginning of the planning period:' | translate}}
+                                                {{item.startPlaning | date:'short'}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <qrcode *ngIf="item.code" [ngClass]="'qrcode'" [qrdata]="item.code"
+                                                [size]="60" [level]="'M'">
+                                            </qrcode>
+                                            <div class="pt-2">
+                                                <a routerLink="booking/{{item.id}}">
+                                                    <button
+                                                        class="btn btn-xs btn-block btn-info">{{'Move equipment' | translate}}</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+        </div>
+    </div>
+</div>

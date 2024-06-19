@@ -1,0 +1,181 @@
+<div class="container-fluid container-fixed-lg pt-3">
+    <pgcard MinimalHeader="true" HeaderClass="separator">
+        <ng-template #CardTitle>
+            <div *ngIf="!removeArrayMode" class="inline">
+                <button class="btn btn-primary btn-xs mr-1" (click)="onEditRowModal()">
+                    <i class="fa fa-plus"></i> {{'Introduce delivery' | translate}}
+                </button>
+                <button class="btn btn-info btn-xs mr-1" (click)="onEditRowModal(selected_entity?.id)"
+                    [disabled]="!canAction">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                    <i class="fa fa-trash"></i>
+                </button>
+              <!--   <button class="btn btn-info btn-xs mr-1" (click)="adjustStockModal.show()">
+                    {{'Adjust stock' | translate}} 
+                </button> -->
+            </div>
+            <div *ngIf="removeArrayMode" class="inline">
+                <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                    <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                </button>
+                <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                    {{'form.cancel' | translate}}
+                </button>
+            </div>
+           <!--  <div class="inline ml-3">
+                <span class="small">{{'Current Stock:' | translate}} </span>
+                <label class="label badge-info">0</label>
+            </div> -->
+        </ng-template>
+
+        <div class="pt-3">
+            <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [autoheight]="true"
+                [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true"
+                [autoshowfiltericon]="true" [enabletooltips]="false" [selectionmode]="selectMode"
+                (onRowselect)="onRowSelect($event)" (onRowdoubleclick)="onEditRowModal(selected_entity?.id)">
+            </jqxGrid>
+        </div>
+    </pgcard>
+</div>
+
+<!-- ENTER DELIVERY MODAL  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5">
+                    <span class="semi-bold">{{ (entity.id ? "Introduce delivery" : "Adjust changes") | translate }}</span>
+                </h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p *ngIf="!entity.id" class="small-text">
+                        {{'You can add a delivery option here in order to use it in the future. Enter the number to be added to your stock. A negative number for stock reduction is also possible.' | translate}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'enterQuantityManually' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="quantity" [(ngModel)]="entity.quantity" numbersOnly
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'date' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="deliveryDate" [(ngModel)]="entity.deliveryDate"
+                                        [ShowTime]="true" [Format]="'DD-MM-YYYY HH:mm'"
+                                        [Placeholder]="'Выберите дату...'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'description' | translate}}</label>
+                                <input type="text" class="form-control" name="description"
+                                    [(ngModel)]="entity.description">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'specification' | translate}}</label>
+                                <textarea rows="3" class="form-control" name="details" placeholder="..."
+                                    [(ngModel)]="entity.details">
+                                    </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ADJUST STOCK MODAL -->
+<div bsModal #adjustStockModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="rowModal" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="adjustStockModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5">
+                    <span class="semi-bold">{{'Adjust stock' | translate}}</span>
+                </h4>
+            </div>
+            <form role="form" #adjustStockForm="ngForm" (ngSubmit)="onSubmitAdjustStock(adjustStockForm)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p *ngIf="!entity.id" class="small-text">
+                        {{'You can adjust the stock here. Enter a new current stock, the changes will be created based on the difference with the current stock.' | translate}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'New stock' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="quantity" [(ngModel)]="entity.quantity" numbersOnly
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'description' | translate}}</label>
+                                <input type="text" class="form-control" name="description"
+                                    [(ngModel)]="entity.description">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'detail' | translate}}</label>
+                                <textarea rows="3" class="form-control" name="details" placeholder="..."
+                                    [(ngModel)]="entity.details">
+                                    </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="adjustStockForm.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="adjustStockModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

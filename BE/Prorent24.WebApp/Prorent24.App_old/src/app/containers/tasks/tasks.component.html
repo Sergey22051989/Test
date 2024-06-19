@@ -1,0 +1,221 @@
+<rent-filter-panel [entityType]="entityType" (onChanged)="onChangedFilter($event)"></rent-filter-panel>
+
+<div class="inner-content full-height">
+    <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.nestedSplitter">
+        <div class="splitter-panel">
+            <div class="jumbotron no-margin">
+                <div class="container-fluid">
+                    <div class="inner" pg-parallax>
+                        <h4>{{'Tasks' | translate}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="full-height pb-96">
+                <div class="container-fluid bg-white grid-controls-panel p-2">
+                    <div class="pull-right">
+                        <button class="btn btn-xs btn-white ml-1" matTooltip="{{'Open/close widget' | translate}}"
+                            (click)="toggleWidget()"><i class="fa fa-cubes"></i></button>
+                        <button class="btn btn-xs btn-white ml-1" (click)="showAdditionalFieldsModal()"
+                            matTooltip="{{'Add columns' | translate}}"><i class="fa fa-list"></i></button>
+                    </div>
+                    <div *ngIf="!removeArrayMode">
+                        <button *ngIf="gridPermission.edit" class="btn btn-primary btn-xs mr-1"
+                            (click)="onEditRowModal()">
+                            <i class="fa fa-plus"></i> {{'form.add' | translate}}
+                        </button>
+                        <button *ngIf="gridPermission.edit" class="btn btn-primary btn-xs mr-1"
+                            matTooltip="{{'Complete task' | translate}}" [disabled]="!canAction"
+                            (click)="onShowCloseTask()">
+                            <i class="fa fa-check"></i>
+                        </button>
+                        <button *ngIf="gridPermission.edit" class="btn btn-info btn-xs mr-1"
+                            matTooltip="{{'form.edit' | translate}}" (click)="onEditRowModal(selected_entity?.id, true);"
+                            [disabled]="!canAction">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button *ngIf="gridPermission.delete" class="btn btn-danger btn-xs mr-1"
+                            matTooltip="{{'form.delete' | translate}}" (click)="changeRemoveArrayMode()">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                            <i class="fa fa-trash"></i> {{'form.confirm' | translate}}
+                        </button>
+                        <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+                <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+                    [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true"
+                    [autoshowfiltericon]="true" [selectionmode]="selectMode" [filterable]="true"
+                    [columnsreorder]="true" [scrollbarsize]="7" (onRowselect)="onRowSelect($event, true)"
+                    [groupable]="true" [showgroupsheader]="false"
+                    (onRowdoubleclick)="onEditRowModal(selected_entity?.id, true);">
+                </jqxGrid>
+            </div>
+        </div>
+        <div class="splitter-panel">
+            <rent-widget-info [entityType]="entityType" [entityId]="selected_entity?.id" [data]="selected_entity_full">
+            </rent-widget-info>
+        </div>
+    </jqxSplitter>
+</div>
+
+<rent-additional-grid-column [entity]="tableEntityType" (onAddColumn)="onAddColumns($event)">
+</rent-additional-grid-column>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'task' | translate}}</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ (entity.id ? 'form.edit' : 'form.add') | translate }} {{'the task' | translate}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" [class.has-error]="task.invalid && (task.dirty || task.touched)">
+                                <label>{{'task' | translate}}</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="{{'The name of the task' | translate}}" [(ngModel)]="entity.name"
+                                    #task="ngModel" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'deadline' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="deadLine" [(ngModel)]="entity.deadLine" [ShowTime]="true"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [Placeholder]="'Выберите дату...'">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group form-group-default form-group-default-select2">
+                                <label>{{'executors' | translate}}</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'"
+                                    [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'" [Multiple]="true"
+                                    [(ngModel)]="entity.executors" name="executors" [NotFoundContent]="'Not found'"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName"
+                                        [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isPublic" checked="checked" name="isPublic"
+                                    [(ngModel)]="entity.isPublic">
+                                <label for="isPublic">
+                                    {{'Public(for all)' | translate}}
+                                </label>
+                            </div>
+
+                            <div *ngIf="!entity.isPublic"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>{{'Visible to' | translate}}</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'"
+                                    [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'" [Multiple]="true"
+                                    [(ngModel)]="entity.crewMembers" name="crewMembers" [NotFoundContent]="'Not found'"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName"
+                                        [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'entity.description' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="description" name="description"
+                                    placeholder="..." [(ngModel)]="entity.description" #text="ngModel">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--MODAL STICK UP (CLOSE TASKS)  -->
+<div bsModal #closeTasksModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="closeTasksModal" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="closeTasksModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'Task completion' | translate}}</span></h4>
+            </div>
+            <form role="form" #closeTaskForm="ngForm" (ngSubmit)="submitCloseTask(closeTaskForm)">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ entity.name }}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="input-group date">
+                                    <pg-datepicker name="date" [(ngModel)]="entity.completedIn" [ShowTime]="true"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [Placeholder]="'Выберите дату...'">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons">
+                        {{'Complete' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="closeTasksModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+<pgcard MinimalHeader="true" HeaderClass="separator">
+    <ng-template #CardTitle>
+        <button class="btn btn-primary btn-xs mr-1" (click)="onEditRowModal()">
+            <i class="fa fa-plus"></i> {{'form.add' | translate}}
+        </button>
+        <button class="btn btn-info btn-xs mr-1" (click)="onEditRowModal(selected_entity?.id)" [disabled]="!canAction">
+            <i class="fa fa-edit"></i>
+        </button>
+        <button class="btn btn-danger btn-xs mr-1" (click)="onDeleteRow(parentId)" [disabled]="!canAction">
+            <i class="fa fa-trash"></i>
+        </button>
+    </ng-template>
+
+    <div class="pt-3">
+        <jqxGrid #dataGrid [theme]="'metro'" [width]="'100%'" [autoheight]="true" [source]="source"
+            [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true" [autoshowfiltericon]="true"
+            [enabletooltips]="false" [selectionmode]="'singlerow'" [columnsreorder]="true"
+            (onRowselect)="onRowSelect($event)" (onRowdoubleclick)="onEditRowModal(selected_entity?.id)">
+        </jqxGrid>
+    </div>
+</pgcard>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal" [config]="{backdrop: 'static'}"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">Ставки</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ (entity.id ? "form.edit" : "form.create") | translate }} ставку
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                <label>{{'entity.name' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="{{'entity.name' | translate}}" [(ngModel)]="entity.name"
+                                    #name="ngModel" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'hourlyrate' | translate}}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-money"></i>
+                                        </span>
+                                    </div>
+                                    <input type="number" placeholder="0" class="form-control" id="hourlyRate"
+                                        name="hourlyRate" [(ngModel)]="entity.hourlyRate" #hourlyRate="ngModel" numbersOnly [numType]="'decimal'">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'entity.dailyrate' | translate}}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-money"></i>
+                                        </span>
+                                    </div>
+                                    <input type="number" placeholder="0" class="form-control" id="dailyRate"
+                                        name="dailyRate" [(ngModel)]="entity.dailyRate" #dailyRate="ngModel" numbersOnly [numType]="'decimal'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Shift duration' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="maxNumberOfTimeUnit"
+                                        name="maxNumberOfTimeUnit" [(ngModel)]="entity.maxNumberOfTimeUnit"
+                                        #maxNumberOfTimeUnit="ngModel" numbersOnly>
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.timeUnit" id="timeUnit"
+                                            name="timeUnit" [PlaceHolder]="''" AllowClear ShowSearch [FirstDefault]="true">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                                <span class="help fs-10">{{'After exceeding the number of hours, the hourly rate is charged in excess of the daily rate' | translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

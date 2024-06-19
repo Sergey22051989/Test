@@ -1,0 +1,1 @@
+﻿ALTER TABLE "dbo_files" ADD "Size" TEXT NULL DEFAULT 0;

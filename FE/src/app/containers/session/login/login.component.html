@@ -1,0 +1,97 @@
+<div class="login-wrapper">
+    <img src="../../../../assets/img/logo/logo-login.jpg" style="width: 72%; height: 78%; margin-top: 5%;">
+    <div class="login-container bg-white ">
+        <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
+            <!-- <img alt="logo" pgretina="" [src]="logo$ | async" style="max-height: 100px;"> -->
+
+            <p class="p-t-35 text-session-page">{{'session.sign_into_your_account' | translate}}</p>
+
+            <!-- Errors {{ item.value | translate }} -->
+            <ul class="list-unstyled m-0">
+                <li class="small text-danger" *ngFor="let item of (error$ | async)?.error | keyvalue">
+                </li>
+            </ul>
+
+            <form style="padding-top: 22%;" role="form" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+                <div pgFormGroupDefault class="form-group form-group-default"
+                    [class.has-error]="loginUserName.invalid && (loginUserName.dirty || loginUserName.touched)">
+                    <label class="text-session-label">{{'session.login' | translate}}</label>
+                    <input type="text" id="userName" name="userName" [(ngModel)]="login.email" #loginUserName="ngModel"
+                        required placeholder="{{'session.enter_login' | translate}}" class="form-control">
+                </div>
+                <div *ngIf="loginUserName.invalid && (loginUserName.dirty || loginUserName.touched)">
+                    <label class="error">{{'messages.field_is_required' | translate}}.</label>
+                </div>
+
+                <div pgFormGroupDefault class="form-group form-group-default"
+                    [class.has-error]="loginPassword.invalid && (loginPassword.dirty || loginPassword.touched)">
+                    <label class="text-session-label">{{'session.password' | translate}}</label>
+                    <input type="password" class="form-control" placeholder="{{'session.enter_password' | translate}}"
+                        id="password" name="password" [(ngModel)]="login.password" #loginPassword="ngModel" required>
+                </div>
+                <div *ngIf="loginPassword.invalid && (loginPassword.dirty || loginPassword.touched)">
+                    <label class="error">{{'messages.field_is_required' | translate}}.</label>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 no-padding sm-p-l-10">
+                        <div class="checkbox">
+                            <input type="checkbox" value="1" id="checkbox1">
+                            <label for="checkbox1">{{'session.keep_me_signed_in' | translate}}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center justify-content-end"><a [routerLink]="['.']"
+                            class="text-info small"
+                            (click)="remindPasswordModal.show()">{{ 'session.forgot_password' | translate }}?</a>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-cons m-t-10" type="submit"
+                    [class.disabled]="loginForm.invalid">{{'session.sign_in' | translate}}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #remindPasswordModal="bs-modal" class="modal fade fill-in" tabindex="-1" role="dialog"
+    aria-labelledby="remindPasswordModal" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="remindPasswordModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{ 'password_recowery' | translate}}</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onRemindPassword(form)">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p *ngIf="sentEmail" class="fs-16 text-black">
+                                {{ 'session.new_password_sent_to_mail' | translate }} {{ email }}</p>
+                            <p *ngIf="notSentEmail" class="font-montserrat bold text-danger m-r-20 fs-16">
+                                {{ 'session.email_not_found' | translate }}</p>
+                            <div *ngIf="!sentEmail">
+                                <div pgFormGroupDefault class="form-group form-group-default"
+                                    [class.has-error]="your_email.invalid && (your_email.dirty || your_email.touched)">
+                                    <label>{{'Enter your Email' | translate}}</label>
+                                    <input type="text" id="your_email" name="email" [(ngModel)]="email"
+                                        #your_email="ngModel" required placeholder="E-mail" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.send' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="remindPasswordModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

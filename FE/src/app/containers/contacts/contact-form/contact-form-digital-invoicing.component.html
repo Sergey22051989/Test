@@ -1,0 +1,43 @@
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #form="ngForm" (ngSubmit)="submitData(form)">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/contacts" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>{{'An identification number' | translate}}</label>
+                            <div class="input-group">
+                                <input type="text" placeholder="{{'An identification number' | translate}}" class="form-control"
+                                    name="identificationNumber" [(ngModel)]="entity.identificationNumber" required>
+                            </div>
+                            <span class="help fs-10">{{'Identification number, e.g. UNP or state identification number' | translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>{{'Identification scheme' | translate}}</label>
+                            <div class="input-group">
+                                <input type="text" placeholder="{{'Identification scheme' | translate}}" class="form-control"
+                                    name="identificationScheme" [(ngModel)]="entity.identificationScheme" required>
+                            </div>
+                            <span class="help fs-10">{{'Identification scheme in accordance with ISO6523' | translate}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </pgcard>
+    </form>
+</div>

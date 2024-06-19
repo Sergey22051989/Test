@@ -1,0 +1,666 @@
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #form="ngForm" (ngSubmit)="submitData(form, true, true, 1)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/contacts" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'data' | translate}}
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'entity.folder' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="hidden" name="folderId" [(ngModel)]="entity.folderId" required>
+                                    <input class="form-control input-sm" name="folderName"
+                                        [(ngModel)]="entity.folderName" type="text" placeholder="..." disabled required>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                            (click)="foldersModal.showFolders()">
+                                            <i class="fa fa-folder"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!--  <div class="form-group"
+                                [class.has-error]="companyTypeId.invalid && (companyTypeId.dirty || companyTypeId.touched)">
+                                <label class="label-sm">{{'companyType' | translate}}<span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <pg-select style="width: 100%;" [(ngModel)]="entity.companyTypeId"
+                                        id="companyTypeId" name="companyTypeId" [PlaceHolder]="''"
+                                        #companyTypeId="ngModel" [FirstDefault]="true" [required]="true"
+                                        [Disabled]="entity.id ? true: false">
+                                        <pg-option *ngFor="let item of companyTypes" [Label]="item.name"
+                                            [Value]="item.id">
+                                        </pg-option>
+                                    </pg-select>
+                                </div>
+                            </div> -->
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isCompany" checked="checked" name="isCompany"
+                                    [(ngModel)]="entity.isCompany">
+                                <label for="isCompany">
+                                    {{'company' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="entity.isCompany">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [class.has-error]="companyName.invalid && (companyName.dirty || companyName.touched)">
+                                    <label class="label-sm"> {{'Full_company_name' | translate}} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" placeholder="{{'Full_company_name' | translate}}" class="form-control"
+                                        id="companyName" name="companyName" [(ngModel)]="entity.companyName"
+                                        #companyName="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"
+                                    [class.has-error]="companyShortName.invalid && (companyShortName.dirty || companyShortName.touched)">
+                                    <label class="label-sm">
+                                        {{'Short_company_name' | translate}} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" placeholder="{{'Short_company_name' | translate}}" class="form-control"
+                                        id="companyShortName" name="companyShortName"
+                                        [(ngModel)]="entity.companyShortName" #companyShortName="ngModel" required>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group"
+                                [class.has-error]="lastName.invalid && (lastName.dirty || lastName.touched)">
+                                <label class="label-sm">{{'lastname' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" placeholder="{{'lastname' | translate}}" class="form-control" id="lastName"
+                                    name="lastName" [(ngModel)]="entity.lastName" #lastName="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group"
+                                [class.has-error]="firstName.invalid && (firstName.dirty || firstName.touched)">
+                                <label class="label-sm">{{'firstname' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" placeholder="{{'firstname' | translate}}" class="form-control" id="firstName"
+                                    name="firstName" [(ngModel)]="entity.firstName" #firstName="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="label-sm">{{'middlename' | translate}}</label>
+                                <input type="text" placeholder="{{'middlename' | translate}}" class="form-control" id="middleName"
+                                    name="middleName" [(ngModel)]="entity.middleName" #middleName="ngModel">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                     <ng-container *ngIf="!entity.isCompany">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="label-sm">{{'ITN' | translate}}</label>
+                                    <input type="email" placeholder="{{'ITN' | translate}}" class="form-control" id="inn" name="inn"
+                                        [(ngModel)]="entity.inn" #inn="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </ng-container> -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'dateOfBirth' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="birthDate" [(ngModel)]="entity.birthDate"
+                                        [Format]="'DD-MM-YYYY'" [Placeholder]="'Choose...' | translate">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">Email</label>
+                                <input type="email" placeholder="Email" class="form-control" id="email" name="email"
+                                    [(ngModel)]="entity.email" #email="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Website' | translate}}</label>
+                                <input type="text" placeholder="{{'Website' | translate}}" class="form-control" id="website"
+                                    name="website" [(ngModel)]="entity.website" #website="ngModel">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="label-sm">Наименование линии</label>
+                                <input type="text" placeholder="Наименование линии" class="form-control" id="nameLine"
+                                    name="nameLine" [(ngModel)]="entity.nameLine" #nameLine="ngModel">
+                            </div>
+                        </div>
+                    </div> -->
+                    <!--  <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">Телефон</label>
+                                <input type="text" class="form-control" id="phone" name="phone"
+                                    [(ngModel)]="entity.phone" #phone="ngModel" mask="+0(000) 000-00-00"
+                                    [showMaskTyped]="true" [dropSpecialCharacters]="false">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                           
+                        </div>
+                    </div> -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="hidden" [(ngModel)]="entity.phones" name="phones">
+                            <div class="form-group">
+                                <label>{{'phone' | translate}}</label>
+                                <div class="input-group mb-2" *ngFor="let phone of entity.phones; index as i">
+                                    <input type="text" class="form-control" name="phone{{i}}" [(ngModel)]="phone"
+                                        mask="+0(000) 000-00-00" [showMaskTyped]="true" [dropSpecialCharacters]="false">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-white" (click)="removePhone(i)"><i
+                                                class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+
+                                <form role="form" #phoneForm="ngForm" (ngSubmit)="addPhone(phoneForm)">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="" class="form-control" name="phone"
+                                            [(ngModel)]="phone_Form.phone" mask="+0(000) 000-00-00"
+                                            [showMaskTyped]="true" [dropSpecialCharacters]="false" required />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-white"
+                                                [disabled]="phoneForm.invalid"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="row" *ngIf="entity.isCompany">
+                        <div class="col-md-6">
+                            <input type="hidden" [(ngModel)]="entity.companyPhones" name="companyPhones">
+                            <div class="form-group">
+                                <label>{{'companyPhone' | translate}}</label>
+                                <div class="input-group mb-2" *ngFor="let phone of entity.companyPhones; index as i">
+                                    <input type="text" class="form-control" name="phone{{i}}" [(ngModel)]="phone"
+                                        mask="+0(000) 000-00-00" [showMaskTyped]="true" [dropSpecialCharacters]="false">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-white" (click)="removeCompanyPhone(i)"><i
+                                                class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+
+                                <form role="form" #phoneCompanyForm="ngForm"
+                                    (ngSubmit)="addCompanyPhone(phoneCompanyForm)">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="" class="form-control" name="phone"
+                                            [(ngModel)]="phone_company_Form.phone" mask="+0(000) 000-00-00"
+                                            [showMaskTyped]="true" [dropSpecialCharacters]="false" required />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-white"
+                                                [disabled]="phoneCompanyForm.invalid"><i
+                                                    class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="hidden" [(ngModel)]="entity.socialNetworks" name="socialNetworks">
+                                <label>{{'additional contacts' | translate}}</label>
+                                <div class="input-group pb-2"
+                                    *ngFor="let social of entity.socialNetworks; let i = index">
+                                    <div class="input-group-prepend">
+                                        <input type="text" class="form-control" style="width: 110px;"
+                                            value="{{social.type | translate}}" disabled="true">
+                                    </div>
+                                    <input type="text" placeholder="" class="form-control" name="name{{i}}"
+                                        [(ngModel)]="social.name" />
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-white" (click)="removeSocialContact(i)"><i
+                                                class="fa fa-times"></i></button>
+                                    </div>
+                                </div>
+
+                                <form role="form" #socialNetworkLineform="ngForm"
+                                    (ngSubmit)="addSocialContact(socialNetworkLineform)">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <pg-select style="width: 100%; min-width: 110px;"
+                                                [(ngModel)]="socialForm.type" name="type" [PlaceHolder]="''"
+                                                [required]="true" [FirstDefault]="true">
+                                                <pg-option *ngFor="let social of socialNetworks | enumToArray"
+                                                    [Label]="social | translate" [Value]="social">
+                                                </pg-option>
+                                            </pg-select>
+                                        </div>
+                                        <input type="text" placeholder="" class="form-control" name="name"
+                                            [(ngModel)]="socialForm.name" required />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-white"
+                                                [disabled]="socialNetworkLineform.invalid"><i
+                                                    class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Specialization (professional area)' | translate}}</label>
+                                <input type="text" placeholder="{{'Specialization (professional area)' | translate}}"
+                                    class="form-control" id="specialization" name="specialization"
+                                    [(ngModel)]="entity.specialization" #specialization="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">Номер базы данных</label>
+                                <input type="text"
+                                    placeholder="Номер базы данных (Генерируется автоматически, если не заполнено)"
+                                    class="form-control" id="databaseNumber" name="databaseNumber"
+                                    [(ngModel)]="entity.databaseNumber" #databaseNumber="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div> -->
+                    <!-- <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">Контактное лицо по умолчанию</label>
+                                <div class="input-group">
+                                    <pg-select style="width: 100%;" [(ngModel)]="entity.defaultContactPersonId"
+                                        id="defaultContactPersonId" name="defaultContactPersonId" [PlaceHolder]="''"
+                                        #type="ngModel" [Disabled]="entity.id ? false : true">
+                                        <pg-option *ngFor="let item of contactPersons"
+                                            [Label]="item.firstName + ' ' + item.lastName" [Value]="item.id">
+                                        </pg-option>
+                                    </pg-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div> -->
+                </pgcard>
+
+                <pgcard *ngIf="entity.isCompany" MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'Company details' | translate}}
+                    </ng-template>
+                    <div class="pt-3">
+                        <!--  <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">ИНН</label>
+                                    <input type="email" placeholder="ИНН" class="form-control" id="inn" name="inn"
+                                        [(ngModel)]="entity.inn" #inn="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'IEC' | translate}}</label>
+                                    <input type="email" placeholder="{{'IEC' | translate}}" class="form-control" id="kpp" name="kpp"
+                                        [(ngModel)]="entity.kpp" #kpp="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'PSRN' | translate}}</label>
+                                    <input type="email" placeholder="{{'PSRN' | translate}}" class="form-control" id="ogrn" name="ogrn"
+                                        [(ngModel)]="entity.ogrn" #ogrn="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'Bank' | translate}}</label>
+                                    <input type="email" placeholder="{{'Bank' | translate}}" class="form-control" id="bank" name="bank"
+                                        [(ngModel)]="entity.bank" #bank="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'Payment account' | translate}}</label>
+                                    <input type="email" placeholder="{{'Payment account' | translate}}" class="form-control"
+                                        id="checkingAccount" name="checkingAccount" [(ngModel)]="entity.checkingAccount"
+                                        #checkingAccount="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'Correspondent account' | translate}}</label>
+                                    <input type="email" placeholder="{{'Correspondent account' | translate}}" class="form-control"
+                                        id="correspondentAccount" name="correspondentAccount"
+                                        [(ngModel)]="entity.correspondentAccount" #correspondentAccount="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-group-default">
+                                    <label class="label-sm">{{'BIC' | translate}}</label>
+                                    <input type="email" placeholder="{{'BIC' | translate}}" class="form-control" id="bic" name="bic"
+                                        [(ngModel)]="entity.bic" #bic="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard *ngIf="entity.isCompany" MinimalHeader="true" ngModelGroup="visitingAddress">
+                    <ng-template #CardTitle>
+                        {{'Legal address' | translate}}
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'country' | translate}}</label>
+                                <pg-select style="width: 100%;" name="countryId"
+                                    [(ngModel)]="entity.visitingAddress.countryId" [PlaceHolder]="'Выбрать...'"
+                                    AllowClear ShowSearch>
+                                    <pg-option *ngFor="let item of countries" [Label]="item.name" [Value]="item.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Area' | translate}}</label>
+                                <input type="text" placeholder="{{'Area' | translate}}" class="form-control"
+                                    id="visitingAddress.region" name="region"
+                                    [(ngModel)]="entity.visitingAddress.region" #city="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>{{'city' | translate}}</label>
+                                <input type="text" placeholder="{{'city' | translate}}" class="form-control" id="visitingAddress.city"
+                                    name="city" [(ngModel)]="entity.visitingAddress.city" #city="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'postalcode' | translate}}</label>
+                                <input type="text" placeholder="{{'postalcode' | translate}}" class="form-control"
+                                    id="visitingAddress.postalCode" name="postalCode"
+                                    [(ngModel)]="entity.visitingAddress.postalCode" #postcode="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>{{'Street' | translate}}</label>
+                                <input type="text" placeholder="{{'Street' | translate}}" class="form-control" id="visitingAddress.address"
+                                    name="address" [(ngModel)]="entity.visitingAddress.address" #street="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'HouseNumber' | translate}}</label>
+                                <input type="text" placeholder="{{'HouseNumber' | translate}}" class="form-control"
+                                    id="visitingAddress.number" name="number"
+                                    [(ngModel)]="entity.visitingAddress.number" #houseNumber="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button class="btn btn-sm btn-default"
+                                    (click)="copyAddressValues(entity.postalAddress, entity.visitingAddress); copyAddressValues(entity.billingAddress, entity.visitingAddress);">
+                                <i class="fa fa-arrow-down"></i> {{'Copy to actual address' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard MinimalHeader="true" ngModelGroup="postalAddress">
+                    <ng-template #CardTitle>
+                        {{'The actual address' | translate}}
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'country' | translate}}</label>
+                                <pg-select style="width: 100%;" name="countryId"
+                                    [(ngModel)]="entity.postalAddress.countryId" [PlaceHolder]="'Выбрать...'" AllowClear
+                                    ShowSearch>
+                                    <pg-option *ngFor="let item of countries" [Label]="item.name" [Value]="item.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Area' | translate}}</label>
+                                <input type="text" placeholder="{{'Area' | translate}}" class="form-control" id="postalAddress.region"
+                                    name="region" [(ngModel)]="entity.postalAddress.region" #city="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>{{'city' | translate}}</label>
+                                <input type="text" placeholder="{{'city' | translate}}" class="form-control" id="postalAddress.city"
+                                    name="city" [(ngModel)]="entity.postalAddress.city" #city="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'postalcode' | translate}}</label>
+                                <input type="text" placeholder="{{'postalcode' | translate}}" class="form-control"
+                                    id="postalAddress.postalCode" name="postalCode"
+                                    [(ngModel)]="entity.postalAddress.postalCode" #postcode="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>{{'Street' | translate}}</label>
+                                <input type="text" placeholder="{{'Street' | translate}}" class="form-control" id="postalAddress.address"
+                                    name="address" [(ngModel)]="entity.postalAddress.address" #street="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{{'HouseNumber' | translate}}</label>
+                                <input type="text" placeholder="{{'HouseNumber' | translate}}" class="form-control"
+                                    id="postalAddress.number" name="number" [(ngModel)]="entity.postalAddress.number"
+                                    #houseNumber="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <!--  <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button class="btn btn-sm btn-default"
+                                (click)="copyAddressValues(entity.billingAddress, entity.postalAddress);"><i
+                                    class="fa fa-arrow-down"></i> Копировать в платежный адрес</button>
+                        </div>
+                    </div> -->
+                </pgcard>
+
+                <!--                 <pgcard MinimalHeader="true" ngModelGroup="billingAddress">
+                    <ng-template #CardTitle>
+                        Платежный адрес
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Страна</label>
+                                <pg-select style="width: 100%;" name="countryId"
+                                    [(ngModel)]="entity.billingAddress.countryId" [PlaceHolder]="'Выбрать...'"
+                                    AllowClear ShowSearch>
+                                    <pg-option *ngFor="let item of countries" [Label]="item.name" [Value]="item.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Область (для отправки счета)</label>
+                                <input type="text" placeholder="Область" class="form-control" id="billingAddress.region"
+                                    name="region" [(ngModel)]="entity.billingAddress.region" #city="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Город (для отправки счета)</label>
+                                <input type="text" placeholder="Город" class="form-control" id="billingAddress.city"
+                                    name="city" [(ngModel)]="entity.billingAddress.city" #city="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Почтовый индекс (для отправки счета)</label>
+                                <input type="text" placeholder="Почтовый индекс" class="form-control"
+                                    id="billingAddress.postalCode" name="postalCode"
+                                    [(ngModel)]="entity.billingAddress.postalCode" #postcode="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Улица (для отправки счета)</label>
+                                <input type="text" placeholder="Улица" class="form-control" id="billingAddress.address"
+                                    name="address" [(ngModel)]="entity.billingAddress.address" #street="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Номер дома (для отправки счета)</label>
+                                <input type="text" placeholder="Номер дома" class="form-control"
+                                    id="billingAddress.number" name="number" [(ngModel)]="entity.billingAddress.number"
+                                    #houseNumber="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                </pgcard> -->
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'Confidentiality' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isPublic" checked="checked" name="isPublic"
+                                    [(ngModel)]="entity.isPublic">
+                                <label for="isPublic">
+                                    {{'Public (for all)' | translate}}
+                                </label>
+                            </div>
+
+                            <div *ngIf="!entity.isPublic"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>{{'Visible to' | translate}}</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'"
+                                    [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'" [Multiple]="true"
+                                    [(ngModel)]="entity.crewMembers" name="crewMembers" [NotFoundContent]="'Not found'"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName"
+                                        [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>{{'Notes' | translate}}</label>
+                            <textarea rows="3" class="form-control" id="projNote" name="projNote" placeholder="..."
+                                [(ngModel)]="entity.projNote">
+                                                </textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </pgcard>
+    </form>
+</div>
+
+<rent-tree-folders [entityType]="entityType" (onSelect)="setFolder($event)"></rent-tree-folders>

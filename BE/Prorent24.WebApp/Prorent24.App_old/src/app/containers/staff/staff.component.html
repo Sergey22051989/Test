@@ -1,0 +1,137 @@
+<rent-filter-panel [entityType]="entityType" (onChanged)="onChangedFilter($event)"></rent-filter-panel>
+
+<div class="inner-content full-height">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'" [orientation]="'horizontal'"
+        [panels]="panelOptions.mainSplitter" (onResize)="sheduler.updateHeight()">
+        <div class="splitter-panel">
+            <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+                [panels]="panelOptions.nestedSplitter">
+                <div class="splitter-panel">
+                    <div class="jumbotron no-margin">
+                        <div class="container-fluid">
+                            <div class="inner" pg-parallax>
+                                <h4>{{'crew' | translate}}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="full-height pb-96">
+                        <div class="container-fluid bg-white grid-controls-panel p-2">
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-xs btn-default ml-1" (click)="shedulerInfo.show()"
+                                    matTooltip="{{'Marking' | translate}}">
+                                    <i class="fa fa-question"></i>
+                                </button>
+                                <button class="btn btn-xs btn-white ml-1" (click)="toggleTimeline()"
+                                    matTooltip="{{'Open / Close Timeline' | translate}}"><i class="fa fa-clock-o"></i></button>
+                                <button class="btn btn-xs btn-white ml-1" (click)="toggleWidget()"
+                                    matTooltip="{{'Open/close widget' | translate}}"><i class="fa fa-cubes"></i></button>
+                                <button class="btn btn-xs btn-white ml-1" (click)="showAdditionalFieldsModal()"
+                                    matTooltip="{{'Add columns' | translate}}"><i class="fa fa-list"></i></button>
+                            </div>
+                            <div *ngIf="!removeArrayMode">
+                                <a *ngIf="gridPermission.edit" routerLink="create" class="link-button">
+                                    <button type="button" class="btn btn-primary btn-xs mr-1">
+                                        <i class="fa fa-plus"></i> {{'form.add' | translate}}
+                                    </button>
+                                </a>
+                                <a *ngIf="gridPermission.edit" routerLink="edit/{{selected_entity?.id}}"
+                                    class="link-button">
+                                    <button class="btn btn-info btn-xs mr-1" [disabled]="!canAction"
+                                        matTooltip="{{'form.edit' | translate}}">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </a>
+                                <button *ngIf="gridPermission.delete" class="btn btn-danger btn-xs mr-1"
+                                    matTooltip="{{'form.delete' | translate}}" (click)="changeRemoveArrayMode()">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                            <div *ngIf="removeArrayMode">
+                                <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction"
+                                        (click)="onDeleteRows(false, true)">
+                                    <i class="fa fa-trash"></i> {{'form.confirm' | translate}}
+                                </button>
+                                <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                                    {{'form.cancel' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                        <jqxTreeGrid #treeGrid [theme]="'metro'" [localization]="localization" [width]="'100%'"
+                            [height]="'100%'" [source]="source" [selectionMode]="selectMode"
+                            [columns]="tableSource.columns" [sortable]="true" [scrollBarSize]="7"
+                            (onRowSelect)="onRowSelect($event, true)" (onRowDoubleClick)="openEditForm()"
+                            [columnsResize]="true" [hierarchicalCheckboxes]="true" [checkboxes]="true"
+                            [columnsReorder]="true">
+                        </jqxTreeGrid>
+                    </div>
+                </div>
+                <div class="splitter-panel">
+                    <rent-widget-info [entityType]="entityType" [entityId]="selected_entity?.id"
+                        [data]="selected_entity_full">
+                    </rent-widget-info>
+                </div>
+            </jqxSplitter>
+        </div>
+        <div class="splitter-panel">
+            <rent-scheduler-component #sheduler [heightSpec]="'Parent100Pct'" [source]="shedulerStaffSource"
+                [controlPanel]="true">
+            </rent-scheduler-component>
+        </div>
+    </jqxSplitter>
+</div>
+
+<rent-additional-grid-column [entity]="tableEntityType" (onAddColumn)="onAddColumns($event)">
+</rent-additional-grid-column>
+
+<!-- INFO MODAL  -->
+<div bsModal #shedulerInfo="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="shedulerInfo" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="shedulerInfo.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'Marking' | translate}}</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="m-t-0">{{'Background color' | translate}}</h4>
+                        <hr />
+                        <h6 class="m-t-2">{{'availability' | translate}}</h6>
+                        <div>
+                            <div class="p-2 bg-complete-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'available' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-danger-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'notAvailable' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-info-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'unknown' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-primary-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'reserved' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-success-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'Invitation' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-warning-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'Meeting scheduled' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-xs btn-cons" (click)="shedulerInfo.hide()">
+                    {{'form.close' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

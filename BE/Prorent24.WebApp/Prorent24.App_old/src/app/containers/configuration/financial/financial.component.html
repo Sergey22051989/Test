@@ -1,0 +1,249 @@
+<div class="jumbotron no-margin">
+    <div class="sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax="">
+            <div class="container-fluid sm-p-l-0 sm-p-r-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="">{{'Management and accounting' | translate}}</a></li>
+                    <li class="breadcrumb-item active">{{'finance' | translate}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-transparent">
+    <div class="card-body">
+        <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+            <div class="row">
+                <div class="col-lg-12">
+                    <pgcard MinimalHeader="true" HeaderClass="separator">
+                        <ng-template #CardTitle>
+                            <button class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                                <i class="fa fa-save"></i> {{'form.save' | translate}}
+                            </button>
+                        </ng-template>
+
+                        <div class="pt-3">
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-file-text-o"></i> {{'finance' | translate}}
+                                </ng-template>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group"
+                                                 [class.has-error]="currencySign.invalid && (currencySign.dirty || currencySign.touched)">
+                                                <label>{{'Currency' | translate}}</label>
+                                                <input type="text" placeholder="{{'Currency icon' | translate}}" class="form-control"
+                                                       name="currencySign" [(ngModel)]="entity.currencySign"
+                                                       #currencySign="ngModel" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--  <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            {{'Default offer / contract expiration' | translate}}
+                        </label>
+                        <div class="input-group"
+                            [class.has-error]="defaultExpirationPeriodQuotationContract.invalid && (defaultExpirationPeriodQuotationContract.dirty || defaultExpirationPeriodQuotationContract.touched)">
+                            <input type="number" class="form-control"
+                                name="defaultExpirationPeriodQuotationContract"
+                                [(ngModel)]="entity.defaultExpirationPeriodQuotationContract"
+                                #defaultExpirationPeriodQuotationContract="ngModel">
+                            <div class="input-group-append">
+                                <span class="input-group-text default">{{'days' | translate}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{'Default expiration dates' | translate}}</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control"
+                                name="defaultDueTermInvoiceReminders"
+                                [(ngModel)]="entity.defaultDueTermInvoiceReminders">
+                            <div class="input-group-append">
+                                <span class="input-group-text default">{{'days' | translate}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>{{'Type of company' | translate}}</label>
+                                                <pg-select style="width: 100%;" name="companyTypeId"
+                                                           [(ngModel)]="entity.companyTypeId" [PlaceHolder]="'Выбрать...'"
+                                                           AllowClear ShowSearch>
+                                                    <pg-option *ngFor="let item of companyTypes" [Label]="item.name"
+                                                               [Value]="item.id">
+                                                    </pg-option>
+                                                </pg-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>{{'Taxation' | translate}}</label>
+                                                <pg-select style="width: 100%;" name="defaultVatSchemeId"
+                                                           [(ngModel)]="entity.defaultVatSchemeId" [PlaceHolder]="'Выбрать...'"
+                                                           AllowClear ShowSearch>
+                                                    <pg-option *ngFor="let item of vatSchemes" [Label]="item.name"
+                                                               [Value]="item.id">
+                                                    </pg-option>
+                                                </pg-select>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{'Default tax type' | translate}}</label>
+                        <pg-select style="width: 100%;" name="defaultVatClassId"
+                            [(ngModel)]="entity.defaultVatClassId" [PlaceHolder]="'Choose...'"
+                            AllowClear ShowSearch>
+                            <pg-option *ngFor="let item of vatClasses" [Label]="item.name"
+                                [Value]="item.id">
+                            </pg-option>
+                        </pg-select>
+                    </div>
+                </div> -->
+                                    </div>
+                                    <!--  <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{'Default payroll tax' | translate}}</label>
+                        <pg-select style="width: 100%;" name="defaultTaxClassCrewFunctionId"
+                            [(ngModel)]="entity.defaultTaxClassCrewFunctionId"
+                            [PlaceHolder]="'Choose...'" AllowClear ShowSearch>
+                            <pg-option *ngFor="let item of vatClasses" [Label]="item.name"
+                                [Value]="item.id">
+                            </pg-option>
+                        </pg-select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{{'Default Transport Tax' | translate}}</label>
+                        <pg-select style="width: 100%;"
+                            name="defaultTaxClassTransportFunctionId"
+                            [(ngModel)]="entity.defaultTaxClassTransportFunctionId"
+                            [PlaceHolder]="'Choose...' " AllowClear ShowSearch>
+                            <pg-option *ngFor="let item of vatClasses" [Label]="item.name"
+                                [Value]="item.id">
+                            </pg-option>
+                        </pg-select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>{{'VAT class insurance' | translate}}</label>
+                        <pg-select style="width: 100%;" name="vatClassInsuranceId"
+                            [(ngModel)]="entity.vatClassInsuranceId"
+                            [PlaceHolder]="'Choose...' " AllowClear ShowSearch>
+                            <pg-option *ngFor="let item of vatClasses" [Label]="item.name"
+                                [Value]="item.id">
+                            </pg-option>
+                        </pg-select>
+                    </div>
+                </div>
+            </div> -->
+                                </div>
+                            </pgcard>
+
+                            <!-- <pgcard MinimalHeader="true">
+        <ng-template #CardTitle>
+            <i class="fa fa-2x fa-file-text-o"></i> {{'BANK DETAILS' | translate}}
+        </ng-template>
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group" [class.has-error]="bankName.invalid && (bankName.dirty || bankName.touched)">
+                        <label>{{'Bank' | translate}}</label>
+                        <input type="text" placeholder="{{'Bank(name)' | translate}}"
+                            class="form-control input-sm" name="bankName" #bankName="ngModel"
+                            [(ngModel)]="entity.bankName" required>
+                        <span class="help fs-10 pull-right">{{'Name of the bank in which payments are made'}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>{{'Bank account number' | translate}}</label>
+                        <input type="text" placeholder="{{'Bank account number' | translate}}"
+                            class="form-control input-sm" name="bankAccountNumber"
+                            [(ngModel)]="entity.bankAccountNumber" required>
+                        <span class="help fs-10 pull-right">{{'Bank account number to which customers make payments' | translate}}</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>{{'BIC' | translate}}</label>
+                        <input type="text" placeholder="{{'Bank Number (BIC)' | translate}}"
+                            class="form-control input-sm" name="bankNumberBic"
+                            [(ngModel)]="entity.bankNumberBic" required>
+                        <span class="help fs-10 pull-right">{{'BIC of the bank from where payments are made' | translate}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </pgcard> -->
+                            <!--    <pgcard MinimalHeader="true">
+            <ng-template #CardTitle>
+                <i class="fa fa-2x fa-file-text-o"></i> {{'RECEIPTS' | translate}}
+            </ng-template>
+            <div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="printOnLetterhead" checked="checked"
+                                name="printOnLetterhead" [(ngModel)]="entity.printOnLetterhead">
+                            <label for="printOnLetterhead">
+                                {{'Print on default letterhead' | translate}}
+                            </label>
+                        </div>
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="sendTermsConditionsWithQuotations"
+                                checked="checked" name="sendTermsConditionsWithQuotations"
+                                [(ngModel)]="entity.sendTermsConditionsWithQuotations">
+                            <label for="sendTermsConditionsWithQuotations">
+                                {{'Submit terms and conditions in the offer' | translate}}
+                            </label>
+                        </div>
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="sendTermsConditionsWithContracts"
+                                checked="checked" name="sendTermsConditionsWithContracts"
+                                [(ngModel)]="entity.sendTermsConditionsWithContracts">
+                            <label for="sendTermsConditionsWithContracts">
+                                 {{'Submit terms and conditions in the contract' | translate}}
+                            </label>
+                        </div>
+                        <div class="checkbox check-primary">
+                            <input type="checkbox" id="sendTermsConditionsWithInvoices"
+                                checked="checked" name="sendTermsConditionsWithInvoices"
+                                [(ngModel)]="entity.sendTermsConditionsWithInvoices">
+                            <label for="sendTermsConditionsWithInvoices">
+                                 {{'Submit terms and conditions in the invoice' | translate}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </pgcard> -->
+                            </div>
+                        </pgcard>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

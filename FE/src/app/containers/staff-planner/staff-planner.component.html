@@ -1,0 +1,265 @@
+<rent-filter-panel #filterPanel [entityType]="entityType" (onChanged)="onChangedFilter($event)"></rent-filter-panel>
+
+<div class="inner-content full-height">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.mainSplitter">
+        <div class="splitter-panel">
+            <rent-crew-and-vehicles [selectMode]="'checkbox'" [checkedObserve]="true"
+                (checkedRows)="onCheckedFunctions($event)"></rent-crew-and-vehicles>
+        </div>
+        <div class="splitter-panel">
+            <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'" [orientation]="'vertical'"
+                [panels]="[{ size: '100%', collapsible: false }, { size: 240, min: 240, collapsed: true }]"
+                (onResize)="onResizeShedulerSplitter()">
+                <div class="splitter-panel">
+                    <jqxSplitter #secondNestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+                        [orientation]="'horizontal'" [panels]="panelOptions.nestedSplitter">
+                        <div class="jqx-splitter-panel">
+                            <div class="full-height pb-94">
+                                <div class="jumbotron no-margin">
+                                    <div class="container-fluid">
+                                        <div class="inner" pg-parallax>
+                                            <h4>{{'CrewPlanner' | translate}}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container-fluid bg-white p-2">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <button type="button" class="btn btn-xs btn-primary" (click)="onPlanning()"
+                                                [disabled]="(!shedulerProjects.selectedEvent.id || checkedFunctions.functions?.length === 0) || !(shedulerProjects.selectedEvent.needQuantity > 0) || checkedFunctions.type != shedulerProjects.selectedEvent.type.toLowerCase()">{{'To plan' | translate}}</button>
+
+                                            <!-- <div class="inline ml-1 dropdown" dropdown>
+                                                <a class="btn btn-xs btn-default dropdown-toggle"
+                                                    href="javascript:void(0);" id="navbarDropdownMenuLink"
+                                                    dropdownToggle aria-haspopup="true" aria-expanded="false">
+                                                    Действия
+                                                </a>
+                                                <div class="dropdown-menu" *dropdownMenu
+                                                    aria-labelledby="navbarDropdownMenuLink" style="min-width: 240px;">
+                                                
+                                                    <span class="ml-2 hint-text text-uppercase small">Выбранное
+                                                        планирование</span>
+                                                    <a class="dropdown-item" href="javascript:void(0)"><i
+                                                            class="fa fa-edit"></i> Редактировать</a>
+                                                    <a class="dropdown-item" href="javascript:void(0)"><i
+                                                            class="fa fa-trash"></i> Удалить</a>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        <div class="col-sm-6 text-right">
+                                            <button type="button" class="btn btn-xs btn-default mr-1"
+                                                (click)="shedulerInfo.show()" matTooltip="{{'Marking' | translate}}">
+                                                <i class="fa fa-question"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <rent-scheduler-component #shedulerProjects [heightSpec]="'Parent100Pct'"
+                                    [treeEnabled]="true" [source]="shedulerProjectsSource" [startDate]="fromDate"
+                                    (onScrollingX)="onScrollProjectSheduler($event)">
+                                </rent-scheduler-component>
+                            </div>
+                        </div>
+                        <div class="splitter-panel">
+                            <rent-scheduler-component #shedulerAvailabilities [heightSpec]="'Parent100Pct'"
+                                (onTimeRangeSelected)="onTimeRangeSelected($event)"
+                                [source]="shedulerAvailabilitiesSource" [startDate]="fromDate"
+                                [timeRangeSelected]="'Enabled'" (onScrollingX)="onScrollAvailabilitiesSheduler($event)">
+                            </rent-scheduler-component>
+                        </div>
+                    </jqxSplitter>
+                </div>
+                <div class="splitter-panel">
+                    <!--   <div style="height: 100%" perfectScrollbar>
+                        <pg-collapseset Accordion="true">
+                            <pg-collapse [Title]="'Misical Tarzan'">
+                                <pg-collapseset Accordion="true">
+                                    <pg-collapse [Title]="'No time frame'">
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <div class="pt-2">
+                                                    <span class="pull-right">
+                                                        <button class="btn btn no-padding btn-link">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </span>
+                                                    <p class="no-margin">Setup</p>
+                                                    <small><i class="fa fa-clock-o"></i> 8 hours, 0 minites</small>
+                                                </div>
+
+                                                <hr class="no-margin" />
+                                            </li>
+                                            <li>
+                                                <div class="pt-2">
+                                                    <span class="pull-right">
+                                                        <button class="btn btn no-padding btn-link">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </span>
+                                                    <p class="no-margin">Setup</p>
+                                                    <small><i class="fa fa-clock-o"></i> 8 hours, 0 minites</small>
+                                                </div>
+
+                                                <hr class="no-margin" />
+                                            </li>
+                                        </ul>
+                                    </pg-collapse>
+                                    <pg-collapse [Title]="'Any'">
+
+                                    </pg-collapse>
+                                </pg-collapseset>
+                            </pg-collapse>
+                            <pg-collapse [Title]="'Unknown'">
+
+                            </pg-collapse>
+                        </pg-collapseset>
+                    </div> -->
+                </div>
+            </jqxSplitter>
+        </div>
+    </jqxSplitter>
+</div>
+
+<!-- AVAILABILITY FORM MODAL  -->
+<div bsModal #accessShedulerTimeModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="accessShedulerTimeModal" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="accessShedulerTimeModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'form.add' | translate}}</span> {{'Availability' | translate}}</h4>
+            </div>
+            <form role="form" #accessTimeForm="ngForm" (ngSubmit)="onSubmitAccessShedulerTimeData(accessTimeForm)">
+                <input type="hidden" name="type" [(ngModel)]="staffAccess.type">
+                <div class="modal-body">
+                    <p class="small-text">
+
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Action' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="staffAccess.action" id="action"
+                                    name="action" [PlaceHolder]="''" [FirstDefault]="true" [required]="true"> 
+                                    <pg-option *ngFor="let action of timeEventType | enumToArray"
+                                        [Label]="action | translate" [Value]="action">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Since' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker [ngModel]="staffAccess.from" name="from" [ShowTime]="true"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'To' | translate}}</label>
+                                <div class="input-group date">
+                                    <pg-datepicker [ngModel]="staffAccess.until" name="until" [ShowTime]="true"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Resources' | translate}}</label>
+                                <div>
+                                    <button *ngFor="let tag of checkedFunctions.functions; let i = index;" type="button"
+                                        [(ngModel)]="tag.selected" name="selected" ngDefaultControl
+                                        class="btn btn-default btn-xs mr-1 mb-1" btnCheckbox btnCheckboxTrue="true"
+                                        btnCheckboxFalse="false">{{tag.name}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="accessTimeForm.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="accessShedulerTimeModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL  -->
+<div bsModal #shedulerInfo="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog"
+    aria-labelledby="shedulerInfo" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="shedulerInfo.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'Marking' | translate}}</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="m-t-0">{{'Background color' | translate}}</h4>
+                        <hr />
+                        <h6 class="m-t-2">{{'availability' | translate}}</h6>
+                        <div>
+                            <div class="p-2 bg-complete-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'available' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-danger-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'notAvailable' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-info-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'unknown' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-primary-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'reserved' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-success-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'Invitation' | translate}}</p>
+                        </div>
+                        <div>
+                            <div class="p-2 bg-warning-lighter pull-left"></div>
+                            <p class="ml-4 small m-b-0">{{'Meeting scheduled' | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-xs btn-cons" (click)="shedulerInfo.hide()">
+                    {{'form.close' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

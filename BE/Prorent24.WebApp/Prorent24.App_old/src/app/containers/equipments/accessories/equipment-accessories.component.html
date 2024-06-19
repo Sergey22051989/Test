@@ -1,0 +1,113 @@
+<div class="full-height pb-105">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'" [panels]="
+        [{  size: 350, min: 300 }, { size: '100%', collapsible: false }]">
+        <div class="splitter-panel">
+            <rent-equipments-catalog [currentEquipment]="parentId" (onAddRow)="addRow($event)">
+            </rent-equipments-catalog>
+        </div>
+        <div class="splitter-panel">
+            <div class="full-height pb-43">
+                <div class="container-fluid bg-white p-2">
+                    <div *ngIf="!removeArrayMode">
+                        <button class="btn btn-info btn-xs mr-1" (click)="onEditRowModal(selected_entity?.id)"
+                            [disabled]="!canAction">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                            <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                        </button>
+                        <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+
+                <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+                    [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true"
+                    [autoshowfiltericon]="true" [enabletooltips]="false" [selectionmode]="selectMode" [scrollbarsize]="7"
+                    (onRowselect)="onRowSelect($event)" (onRowdoubleclick)="onEditRowModal(selected_entity?.id)">
+                </jqxGrid>
+            </div>
+        </div>
+    </jqxSplitter>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'entity.accessoryname' | translate}}</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="accessoryId" name="accessoryId" [(ngModel)]="entity.accessoryId">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{'Edit Accessory' | translate}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group"
+                                [class.has-error]="quantity.invalid && (quantity.dirty || quantity.touched)">
+                                <label>{{'enterQuantityManually' | translate}} <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="quantity" name="quantity"
+                                    [(ngModel)]="entity.quantity" #quantity="ngModel" numbersOnly required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="automatic" checked="checked" name="automatic"
+                                    [(ngModel)]="entity.automatic">
+                                <label for="automatic">
+                                    {{'entity.automatic' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="skipIfAlreadyPresent" checked="checked"
+                                    name="skipIfAlreadyPresent" [(ngModel)]="entity.skipIfAlreadyPresent">
+                                <label for="skipIfAlreadyPresent">
+                                    {{'entity.skipifalreadypresent' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="free" checked="checked" name="free"
+                                    [(ngModel)]="entity.free">
+                                <label for="free">
+                                    {{'entity.free' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

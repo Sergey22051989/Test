@@ -1,0 +1,134 @@
+<rent-filter-panel [entityType]="entityType" (onChanged)="onChangedFilter($event)"></rent-filter-panel>
+
+<div class="inner-content full-height">
+    <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.nestedSplitter">
+        <div class="splitter-panel">
+            <div class="jumbotron no-margin">
+                <div class="container-fluid">
+                    <div class="inner" pg-parallax="">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a routerLink="/sublease">{{'subhires' | translate}}</a></li>
+                            <li class="breadcrumb-item active">{{'shortagequantity' | translate}}
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="full-height pb-96">
+                <div class="container-fluid bg-white p-2">
+                    <div class="pull-right">
+                        <button class="btn btn-white btn-xs ml-1" (click)="redirectToProject()" [disabled]="!canAction">
+                            <i class="fa fa-link"></i> {{'Open project' | translate}}
+                        </button>
+                        <button class="btn btn-xs btn-white ml-1" (click)="toggleWidget()"><i
+                                class="fa fa-cubes"></i></button>
+                    </div>
+                    <button type="button" class="btn btn-xs btn-white"
+                            (click)="onShowCreateSublease()"> {{'subhires' | translate}}
+                    </button>
+                </div>
+                <jqxTreeGrid #treeGrid [theme]="'metro'" [localization]="localization" [width]="'100%'"
+                    [height]="'100%'" [source]="source" [selectionMode]="selectMode" [columns]="tableSource.columns"
+                    [sortable]="true" [scrollBarSize]="7" (onRowSelect)="onShortageRowSelect($event)"
+                    [columnsResize]="true" [columnsReorder]="true" [hierarchicalCheckboxes]="true" [checkboxes]="true">
+                </jqxTreeGrid>
+            </div>
+        </div>
+        <div class="splitter-panel">
+            <div class="widget-info">
+                <div perfectScrollbar>
+                    <div *ngFor="let infoBlock of shortageInfo">
+                        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+                            <ng-template #CardTitle>
+                                {{infoBlock.entity | translate}}
+                            </ng-template>
+                            <div class="pt-2">
+                                <div *ngFor="let item of infoBlock.data">
+                                    <span class="small"><span class="font-weight-bold">{{item.key.toLowerCase() | translate}}:</span> {{item.value}}</span>
+                                </div>
+                            </div>
+                        </pgcard>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </jqxSplitter>
+</div>
+
+<!-- SUBLEASE MODAL -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'subhires' | translate}}</span></h4>
+            </div>
+            <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+            <div class="modal-body">
+                <p class="small-text">
+                    {{'Existing sublease works for this period:' | translate}}
+                    {{sublease.dateFrom | date: 'dd/MM/yyyy'}} - {{sublease.dateTo | date: 'dd/MM/yyyy'}}
+                </p>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="p-1" style="width: 40px;"></th>
+                                <th class="fs-9 p-1">{{'firstname' | translate}}</th>
+                                <th class="fs-9 p-1">{{'suppliercontactcompany' | translate}}</th>
+                                <th class="fs-9 p-1">{{'status' | translate}}</th>
+                                <th class="fs-9 p-1">{{'Plan with' | translate}}</th>
+                                <th class="fs-9 p-1">{{'Plan to' | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngIf="sublease.subhires?.length == 0">
+                                <td colspan="6" class="v-align-middle text-center fs-12">{{'There is no data' | translate}}</td>
+                            </tr>
+                            <tr *ngFor="let item of sublease.subhires; let i = index;">
+                                <td class="v-align-middle pl-1 p-2">
+                                    <div class="checkbox check-primary text-center">
+                                        <input type="checkbox" value="" id="checkbox_{{item.id}}" [(ngModel)]="item.check" (change)="onCheckedSublease($event, i)">
+                                        <label for="checkbox_{{item.id}}" class="no-padding no-margin"></label>
+                                    </div>
+                                </td>
+                                <td class="v-align-middle pl-1 fs-12 p-2">
+                                    <span>{{item.name}}</span>
+                                </td>
+                                <td class="v-align-middle pl-1 fs-12 p-2">
+                                    <span>{{item.supplierName}}</span>
+                                </td>
+                                <td class="v-align-middle pl-1 fs-12 p-2">
+                                    <span>{{item.status}}</span>
+                                </td>
+                                <td class="v-align-middle pl-1 fs-12 p-2">
+                                    <span>{{item.planningPeriodStart | date: 'dd-MM-yyyy' }}</span>
+                                </td>
+                                <td class="v-align-middle pl-1 fs-12 p-2">
+                                    <span>{{item.planningPeriodEnd | date: 'dd-MM-yyyy'}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-xs btn-info btn-cons" (click)="createSublease()">
+                    {{'New sublease' | translate}}
+                </button>
+                <button type="button" class="btn btn-xs btn-primary btn-cons" (click)="createSublease(true)" [disabled]="!canAcceptSublease">
+                    {{'Confirm' | translate}}
+                </button>
+                <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                    {{'form.cancel' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

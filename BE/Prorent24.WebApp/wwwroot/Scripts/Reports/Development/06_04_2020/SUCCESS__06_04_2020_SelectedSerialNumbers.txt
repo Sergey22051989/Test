@@ -1,0 +1,1 @@
+--ALTER TABLE dbo_project_equipment_movement ADD "SelectedSerialNumbers" TEXT NULL;

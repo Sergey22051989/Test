@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20190730104847_Keys.cs" />
+    <Compile Remove="Migrations\20190820123132_Contact.cs" />
+    <Compile Remove="Migrations\20190820123924_Contact.cs" />
+    <Compile Remove="Migrations\20190822131957_Column.cs" />
+    <Compile Remove="Migrations\20190822131957_Column.Designer.cs" />
+    <Compile Remove="Migrations\20190827101035_TaskExecutor.cs" />
+    <Compile Remove="Migrations\20190827101035_TaskExecutor.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prorent24.Common\Prorent24.Common.csproj" />
+    <ProjectReference Include="..\Prorent24.Entity\Prorent24.Entity.csproj" />
+    <ProjectReference Include="..\Prorent24.UnitOfWork\Prorent24.UnitOfWork.csproj" />
+  </ItemGroup>
+
+</Project>

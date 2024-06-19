@@ -1,0 +1,1 @@
+﻿ALTER TABLE "dbo_files" ADD "IsImage" BOOLEAN DEFAULT 0;

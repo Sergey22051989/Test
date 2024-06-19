@@ -1,0 +1,169 @@
+<div class="full-height pb-105">
+    <jqxSplitter #mainSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'" [panels]="
+        [{  size: 350, min: 300 }, { size: '100%', collapsible: false }]">
+        <div class="splitter-panel">
+            <rent-equipments-catalog (onAddRow)="addRow($event)"></rent-equipments-catalog>
+        </div>
+        <div class="splitter-panel">
+            <div class="full-height pb-43">
+                <div class="container-fluid bg-white p-2">
+                    <div *ngIf="!removeArrayMode">
+                        <button class="btn btn-primary btn-xs mr-1" (click)="addGroup()">
+                            <i class="fa fa-plus"></i>
+                            {{'Add group' | translate}}
+                        </button>
+                        <button class="btn btn-info btn-xs mr-1" (click)="onEditModal(selected_entity?.id)"
+                            [disabled]="!canAction">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                            <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                        </button>
+                        <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+
+                <jqxTreeGrid #treeGrid [theme]="'metro'" [localization]="localization" [width]="'100%'"
+                    [height]="'100%'" [source]="source" [selectionMode]="selectMode" [columns]="tableSource.columns"
+                    [hierarchicalCheckboxes]="true" [checkboxes]="true" [sortable]="true" [scrollBarSize]="7"
+                    (onRowSelect)="onRowSelect($event, false, false)"
+                    (onRowDoubleClick)="onEditModal(selected_entity?.id)" [columnsResize]="true">
+                </jqxTreeGrid>
+            </div>
+        </div>
+    </jqxSplitter>
+</div>
+
+<!-- MODAL STICK UP  -->
+<div bsModal #rowModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="rowModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'equipment' | translate}}</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="entity.id">
+                <input type="hidden" id="groupId" name="groupId" [(ngModel)]="entity.groupId">
+                <input type="hidden" id="equipmentId" name="equipmentId" [(ngModel)]="entity.equipmentId">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{entity.equipmentName}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" [class.has-error]="price.invalid && (price.dirty || price.touched)">
+                                <label class="label-sm">{{'subhireprice' | translate}}</label>
+                                <input type="number" placeholder="" class="form-control" id="price" name="price"
+                                    [(ngModel)]="entity.price" #price="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group"
+                                [class.has-error]="quantity.invalid && (quantity.dirty || quantity.touched)">
+                                <label class="label-sm">{{'enterQuantityManually' | translate}}</label>
+                                <input type="number" placeholder="" class="form-control" id="quantity" name="quantity"
+                                    [(ngModel)]="entity.quantity" #quantity="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group"
+                                [class.has-error]="factor.invalid && (factor.dirty || factor.touched)">
+                                <label class="label-sm">{{'factor' | translate}}</label>
+                                <input type="number" placeholder="" class="form-control" id="factor" name="factor"
+                                    [(ngModel)]="entity.factor" #factor="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group"
+                                [class.has-error]="discount.invalid && (discount.dirty || discount.touched)">
+                                <label class="label-sm">{{'discount' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="number" placeholder="" class="form-control" id="discount"
+                                        name="discount" [(ngModel)]="entity.discount" #discount="ngModel">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            %
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'remark' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="remark" name="remark" placeholder="..."
+                                    [(ngModel)]="entity.remark">
+                                                    </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="rowModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EQUIPMENT GROUP -->
+<div bsModal #groupModal="bs-modal" class="modal fade stick-up" tabindex="1" role="dialog" aria-labelledby="groupModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="groupModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">{{'groupname' | translate}}</span></h4>
+            </div>
+            <form role="form" #groupForm="ngForm" (ngSubmit)="submitGroup(groupForm)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="group.id">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ (group.id ? "edit" : "create") | translate }} {{'the group' | translate}}
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                <label class="label-sm">{{'Group name' | translate}}</label>
+                                <input type="text" placeholder="{{'Group name' | translate}}" class="form-control" id="name"
+                                    name="name" [(ngModel)]="group.groupName" #name="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="groupForm.invalid">
+                        <span *ngIf="group.id">{{'form.save' | translate}}</span>
+                        <span *ngIf="!group.id">{{'form.add' | translate}}</span>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="groupModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

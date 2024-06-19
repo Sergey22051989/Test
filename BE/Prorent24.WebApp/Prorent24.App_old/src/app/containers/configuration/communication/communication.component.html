@@ -1,0 +1,53 @@
+<div class="card card-transparent">
+  <div class="card-header">
+    <div class="card-title"><span>{{'Communication' | translate}}</span></div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <form role="form" #communicationForm="ngForm" (ngSubmit)="onSubmit(communicationForm)">
+          <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+              <button type="submit" class="btn btn-primary btn-xs" [disabled]="communicationForm.invalid">
+                <i class="fa fa-save"></i> {{'form.save' | translate}}
+              </button>
+            </ng-template>
+
+            <div class="pt-3">
+              <pgcard MinimalHeader="true">
+                <ng-template #CardTitle>
+                  <i class="fa fa-2x fa-envelope-o"></i> {{'Messages' | translate}}
+                </ng-template>
+
+                <div class="pt-3">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label>{{'company' | translate}}</label>
+                        <input type="text" placeholder="" class="form-control" id="companyName" name="companyName"
+                          [(ngModel)]="entity.companyName" #companyName="ngModel" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group" [class.has-error]="email.errors">
+                        <label>Email</label>
+                        <input type="email" placeholder="ex: some@example.com" class="form-control" id="email"
+                          name="email" [(ngModel)]="entity.email" #email="ngModel" email required>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                  </div>
+                </div>
+              </pgcard>
+            </div>
+          </pgcard>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

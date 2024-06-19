@@ -1,0 +1,1 @@
+SQLite Error 1: 'duplicate column name: IsRead'.

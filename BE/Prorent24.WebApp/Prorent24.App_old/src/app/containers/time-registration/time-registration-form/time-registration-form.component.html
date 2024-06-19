@@ -1,0 +1,194 @@
+<div class="jumbotron no-margin">
+    <div class="container-fluidcontainer-fixed-lg sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax="">
+            <div class="container-fluid container-fixed-lg sm-p-l-0 sm-p-r-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/time-registration">{{'TimeRegistration' | translate}}</a></li>
+                    <li class="breadcrumb-item active">{{ (entity.id ? "edit" : "create") | translate }} {{'hours recorded' | translate}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/time-registration" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        <i class="fa fa-info"></i> {{'BASIC INFORMATION' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- For update -->
+                            <div *ngIf="entity.crewMember" class="form-group">
+                                <input type="hidden" name="crewMemberId" [(ngModel)]="entity.crewMemberId">
+                                <label class="label-sm">{{'crewmember' | translate}}</label>
+                                <div class="input-group">
+                                    <span style="width: 100%;color:black;" class="input-group-text">
+                                        {{ entity.crewMember }}
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- For create -->
+                            <div *ngIf="!entity.crewMember"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>{{'crewmembers' | translate}} <span class="text-danger">*</span></label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'" [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'"
+                                    [(ngModel)]="entity.crewMembers" name="crewMembers" [NotFoundContent]="'Not found'" [required]="true"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName" [Value]="u.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Start time' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date">
+                                    <pg-datepicker (ngModelChange)="entity.from=$event;_startValueChange()"
+                                        Placeholder="Начало" [ngModel]="entity.from" name="from" [ShowTime]="true" [required]="true"
+                                        [DisabledDate]="_disabledStartDate" [Format]="'DD-MM-YYYY HH:mm'">
+                                    </pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'End time' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group date sm-m-t-10">
+                                    <pg-datepicker (ngModelChange)="entity.until=$event;_endValueChange()"
+                                        Placeholder="Окончание" [ngModel]="entity.until" name="until" [ShowTime]="true" [required]="true"
+                                        [DisabledDate]="_disabledEndDate" [Format]="'DD-MM-YYYY HH:mm'"></pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'break' | translate}} <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="breakDuration" name="breakDuration"
+                                        [(ngModel)]="entity.breakDuration" #breakDuration="ngModel" numbersOnly required>
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.breakTimeUnit"
+                                            id="breakTimeUnit" name="breakTimeUnit" [PlaceHolder]="''">
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        <i class="fa fa-info-circle"></i> {{'ADDITIONAL INFORMATION' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'hourregistrationtype' | translate}} <span class="text-danger">*</span></label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.hourRegistrationType"
+                                    name="hourRegistrationType" [PlaceHolder]="''" AllowClear ShowSearch [required]="true">
+                                    <pg-option *ngFor="let unit of hourRegistrations | enumToArray"
+                                        [Label]="unit | translate" [Value]="unit">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'travelduration' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="travelDuration" name="travelDuration"
+                                        [(ngModel)]="entity.travelDuration" #travelDuration="ngModel" numbersOnly>
+                                    <div class="input-group-append">
+                                        <pg-select style="width: 120px;" [(ngModel)]="entity.travelTimeUnit"
+                                            id="travelTimeUnit" name="travelTimeUnit" [PlaceHolder]="''" AllowClear
+                                            ShowSearch>
+                                            <pg-option *ngFor="let unit of timeUnit | enumToArray"
+                                                [Label]="unit | translate" [Value]="unit">
+                                            </pg-option>
+                                        </pg-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'distance' | translate}}</label>
+                                <div class="input-group">
+                                    <input type="text" placeholder="0" class="form-control" id="distance"
+                                        name="distance" [(ngModel)]="entity.distance" numbersOnly [numType]="'decimal'" #seats="ngModel">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            km
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="lunch" checked="checked" name="lunch"
+                                    [(ngModel)]="entity.lunch">
+                                <label for="lunch">
+                                    {{'lunch' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'Comment' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="remark" name="remark" placeholder="..."
+                                    [(ngModel)]="entity.remark" #remark="ngModel">
+                                    </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+        </pgcard>
+    </form>
+</div>

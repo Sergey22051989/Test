@@ -1,0 +1,131 @@
+<rent-secondary-sidebar extraClass="light">
+    <div class="input-group pl-2 pr-2">
+        <input class="form-control input-sm" [(ngModel)]="searchText" name="searchText" type="text"
+            placeholder="Поиск...">
+        <div class="input-group-append">
+            <button type="button" class="btn btn-sm btn-primary" (click)="filterChange()">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="filter-category-container pb-5">
+        <ng-template *ngFor="let filter of filters" [ngTemplateOutlet]="loadTemplate(filter.filterType)"
+            [ngTemplateOutletContext]="{ $implicit: filter.data}">
+        </ng-template>
+    </div>
+</rent-secondary-sidebar>
+
+<!-- TEMPLATES -->
+<!-- Presets -->
+<ng-template #presetsTemplate let-data>
+    <div>
+        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+            <ng-template #CardTitle>
+                Пресеты <button class="btn-link ml-2 hint-text p-0" (click)="editPresetMode = !editPresetMode"><i
+                        class="fa fa-gear"></i></button>
+            </ng-template>
+        </pgcard>
+        <div *ngIf="!editPresetMode">
+            <ul class="m-b-0">
+                <li *ngFor="let preset of data">
+                    <button class="btn-link btn-sm pl-0 pt-0 pb-0"
+                        (click)="changePreset(preset)">{{preset.name | translate}}</button>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="editPresetMode" class="pl-3 pr-3">
+            <div *ngFor="let preset of data" class="input-group pb-1">
+                <form *ngIf="!preset.isDefault" #presetForm="ngForm" (ngSubmit)="submitPreset(presetForm)">
+                    <input type="hidden" name="id" [(ngModel)]="preset.id">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="button" class="btn btn-sm btn-white" (click)="deletePreset(preset.id)">
+                                <i class="fa fa-trash text-danger"></i>
+                            </button>
+                        </div>
+                        <input class="form-control input-sm" type="text" name="name" [(ngModel)]="preset.name" required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-sm btn-white" [disabled]="presetForm.invalid">
+                                <i class="fa fa-save"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div> 
+        </div>
+    </div>
+</ng-template>
+
+<!-- Folders -->
+<ng-template #foldersTemplate let-data>
+    <div>
+        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+            <ng-template #CardTitle>
+                Папки
+            </ng-template>
+        </pgcard>
+        <div class="filter-tree-folders pl-3">
+            <jqxTree #filterFoldersTree [theme]="'metro'" [source]="folders" [checkboxes]="true" [toggleMode]="'click'"
+                (onCheckChange)="filterChange()"></jqxTree>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Tags -->
+<ng-template #tagsTemplate let-data>
+    <div>
+        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+            <ng-template #CardTitle>
+                Маркировка
+            </ng-template>
+            <div class="filter-tags pt-2">
+                <button *ngFor="let tag of data" type="button" [(ngModel)]="tag.selected"
+                    class="btn btn-default btn-xs mr-1 mb-1" btnCheckbox btnCheckboxTrue="true" btnCheckboxFalse="false"
+                    (click)="filterChange()"><i class="fa fa-tag mr-1"></i>{{tag.name}}</button>
+            </div>
+        </pgcard>
+    </div>
+</ng-template>
+
+<!-- Period -->
+<ng-template #periodTemplate let-data>
+    <rent-filter-period [entityType]="entityType" (onChanged)="changePeriod($event)"></rent-filter-period>
+</ng-template>
+
+
+<!-- Filters -->
+<ng-template #filtersTemplate let-data>
+    <div>
+        <pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+            <ng-template #CardTitle>
+                Фильтры
+            </ng-template>
+        </pgcard>
+        <div class="row p-3">
+            <div class="col-sm-12 text-center">
+                <button *ngIf="!formPresetMode" class="btn btn-sm btn-white" (click)="formPresetMode = !formPresetMode">
+                    Сохранить выбор в качестве предварительной настройки
+                </button>
+
+                <div *ngIf="formPresetMode">
+                    <form #presetForm="ngForm" (ngSubmit)="submitPreset(presetForm)">
+                        <div class="input-group">
+                            <input class="form-control input-sm" type="text" placeholder="Наименование пресета"
+                                name="name" [(ngModel)]="preset.name" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-sm btn-white" [disabled]="presetForm.invalid">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-xs btn-block btn-white mt-2"
+                            (click)="formPresetMode = false">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

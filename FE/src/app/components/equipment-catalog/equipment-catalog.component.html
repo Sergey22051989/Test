@@ -1,0 +1,5 @@
+<jqxGrid #eqCatalogGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'" [scrollbarsize]="7"
+    [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [enabletooltips]="false" [groupable]="true"
+    [showgroupsheader]="false" [sortable]="true" (onRowselect)="onRowSelect($event)" (onRowdoubleclick)="addRowEvent(selected_entity)"
+    [selectionmode]="'singlerow'">
+</jqxGrid>

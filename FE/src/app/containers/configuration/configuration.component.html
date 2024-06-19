@@ -1,0 +1,164 @@
+<!-- START SIDEBAR -->
+<rent-secondary-sidebar extraClass="light">
+
+    <p class="menu-title bold mt-2"><i class="fa fa-user"></i> {{'ACCOUNT' | translate}}</p>
+    <ul class="sub-menu no-padding">
+        <li>
+            <a routerLink="account/company-details">
+                <span class="title">{{'companyInfo' | translate}}</span>
+            </a>
+        </li>
+        <!--         <li>
+        <a routerLink="account/licenses">
+            <span class="title">{{'Licenses' | translate}}</span>
+        </a>
+    </li> -->
+        <!--         <li>
+        <a routerLink="account/payments">
+            <span class="title">{{'Payments' | translate}}</span>
+        </a>
+    </li> -->
+        <li>
+            <a routerLink="account/user-roles">
+                <span class="title">{{'UserRoles' | translate}}</span>
+            </a>
+        </li>
+        <!--         <li>
+        <a routerLink="account/extensions">
+            <span class="title">{{'Extensions' | translate}}</span>
+        </a>
+    </li> -->
+    </ul>
+
+    <p class="menu-title bold m-t-20 all-caps"><i class="fa fa-cog"></i> {{'Settings' | translate}}</p>
+    <ul class="sub-menu no-padding">
+        <li class="">
+            <a routerLink="settings/time-and-location">
+                <span class="title">{{'TimeAndLocation' | translate}}</span>
+            </a>
+        </li>
+        <!--         <li>
+        <a routerLink="settings/range-numbers">
+            <span class="title">{{'Ranges of numbers' | translate}}</span>
+        </a>
+    </li> -->
+        <li>
+            <a routerLink="settings/project-types">
+                <span class="title">{{'ProjectTypes' | translate}}</span>
+            </a>
+        </li>
+        <!--   <li>
+        <a routerLink="settings/project-templates">
+            <span class="title">{{'Project Templates' | translate}}</span>
+        </a>
+    </li> -->
+        <!--  <li>
+        <a routerLink="settings/inspections">
+            <span class="title">{{'inspections' | translate}}</span>
+        </a>
+    </li> -->
+        <!-- <li>
+        <a routerLink="settings/time-registration">
+            <span class="title">{{'TimeRegistration' | translate}}</span>
+        </a>
+    </li> -->
+        <!--         <li>
+        <a routerLink="settings/custom-fields">
+            <span class="title">{{'Additional fields' | translate}}</span>
+        </a>
+    </li> -->
+        <!--         <li>
+        <a routerLink="settings/database">
+            <span class="title">{{'Database reset' | translate}}</span>
+        </a>
+    </li> -->
+    </ul>
+
+    <p class="menu-title bold m-t-20 all-caps"><i class="fa fa-users"></i> {{'Workflow setup' | translate}}</p>
+    <ul class="sub-menu no-padding">
+        <li class="">
+            <a routerLink="communication">
+                <span class="title">{{'Communication' | translate}}</span>
+            </a>
+        </li>
+        <!-- <li>
+        <a routerLink="communication/document-templates">
+            <span class="title">{{'Document Templates' |translate}}</span>
+        </a>
+    </li> -->
+        <!-- <li>
+            <a routerLink="communication/blanks">
+                <span class="title">{{'Бланки' | translate}} </span>
+            </a>
+        </li> -->
+            <!-- <li>
+            <a routerLink="communication/salutation">
+                <span class="title">{{'Appeal' | translate}}</span>
+            </a>
+        </li> -->
+        </ul>
+        <p class="menu-title bold m-t-20 all-caps"><i class="fa fa-money"></i> {{'Management and accounting' | translate}}</p>
+        <ul class="sub-menu no-padding">
+            <li class="">
+                <a routerLink="financial">
+                    <span class="title">{{'finance' | translate}}</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a routerLink="financial/electronic-invoicing">
+                    <span class="title">{{'Выставление счетов' | translate}}</span>
+                </a>
+            </li> -->
+            <li>
+                <a routerLink="financial/invoice-moments">
+                    <span class="title">{{'InvoiceMoments' | translate}}</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a routerLink="financial/factor-groups">
+                    <span class="title">{{'Group factors' | translate}}</span>
+                </a>
+            </li> -->
+            <li>
+                <a routerLink="financial/discount-groups">
+                    <span class="title">{{'DiscountGroups' | translate}}</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="financial/payment-conditions">
+                    <span class="title">{{'PaymentConditions' | translate}}</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="financial/vat-schemes">
+                    <span class="title">{{'VatSchemes' | translate}}</span>
+                </a>
+            </li>
+           <!-- <li>
+                <a routerLink="financial/vat-classes">
+                    <span class="title">{{'VatClasses' | translate}}</span>
+                </a>
+            </li> -->
+            <li>
+                <a routerLink="financial/payment-methods">
+                    <span class="title">{{'PaymentMethods' | translate}}</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="financial/ledger">
+                    <span class="title">{{'Ledger' | translate}}</span>
+                </a>
+            </li>
+           <!--  <li>
+                <a routerLink="financial/additional-conditions" routerLinkActive="active">
+                    <span class="title">{{'Additional terms' | translate}}</span>
+                </a>
+            </li> -->
+        </ul>
+
+    </rent-secondary-sidebar>
+    <!-- END SECONDARY SIDEBAR -->
+
+    <div class="inner-content">
+        <router-outlet></router-outlet>
+    </div>

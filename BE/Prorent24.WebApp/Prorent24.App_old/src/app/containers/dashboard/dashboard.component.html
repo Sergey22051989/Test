@@ -1,0 +1,454 @@
+<div class="jumbotron no-margin">
+    <div class="container-fluid container-fixed-lg sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax>
+            <h4>{{'Dashboard' | translate}}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg pt-3" *ngIf="data!=null">
+    <div class="card card-borderless">
+        <pg-tabset tabAnimation="slide-left" Type="simple" ShowPagination="true">
+            <pg-tab>
+                <ng-template #TabHeading>
+                    {{'dashboard.today' | translate}}
+                </ng-template>
+                <div class="row column-seperation">
+                    <!-- <div class="col-lg-4">
+                      <h3 class="semi-bold">Сегодня</h3>
+                      <span class="small hint-text">На сегодня ничего не запланировано</span>
+                    </div>
+                    <div class="col-lg-3">
+
+                    </div> -->
+                    <ng-container *ngTemplateOutlet="dashboardTemplate;context:data.today"></ng-container>
+                </div>
+            </pg-tab>
+            <pg-tab>
+                <ng-template #TabHeading>
+                    {{'dashboard.tomorrow' | translate}}
+                </ng-template>
+                <!-- <div class="row">
+                  <div class="col-lg-4">
+                    <h3 class="semi-bold">Завтра</h3>
+                    <span class="small hint-text">На завтра ничего не запланировано</span>
+                  </div>
+
+                </div> -->
+                <div class="row column-separation">
+                    <ng-container *ngTemplateOutlet="dashboardTemplate;context:data.tomorrow"></ng-container>
+                </div>
+            </pg-tab>
+        </pg-tabset>
+
+        <div class="row">
+            <div class="col-lg-4 m-t-md">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title clearfix">
+                        <h5 class="inline-block">{{'Projects' | translate}}</h5>
+
+                        <!--<small class="inline-block text-muted m-l-sm">
+                          (<span>{{data.timeSelections.projects.start}}</span>
+                          <span> - </span>
+                          <span>{{data.timeSelections.projects.end}}</span>)
+                        </small>
+
+                        <div class="pull-right">
+                          <button type="button" class="btn btn-white btn-xs" (click)="openTimeModal('projects')">
+                            <i class="fa fa-clock-o"></i>
+                          </button>
+                        </div>
+                            -->
+                    </div>
+                    <div class="dashboard-card-content">
+                        <ul class="list-group clear-list">
+                            <li class="list-group-item first-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn" title="Projects in option"
+                                        (click)="goToProjectList('projects', ['isOption'], 'projects.projectsOptie')"
+                                        [ngClass]="{'btn-warning': data.blockData.projects.projectsOptions > 0, 'btn-info': data.blockData.projects.projectsOptions == 0}"
+                                        role="button" tabindex="0">{{data.blockData.projects.projectsOptions}}</span>
+                                </div>
+                                <i class="fa fa-edit text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.projects_in_option' | translate }}</span>
+                            </li>
+                            <!---->
+                            <li class="list-group-item clearfix" *ngIf="data.license === 'pro'">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                        (click)="goToProjectList('projects', ['isOption', 'openTasks'], 'projects.openTasks.option')"
+                                        [ngClass]="{'btn-warning': data.blockData.projects.openTasks.option > 0, 'btn-info': data.blockData.projects.openTasks.option == 0}"
+                                        role="button" tabindex="0">{{data.blockData.projects.openTasks.option}}</span>
+                                    <span class="info-btn btn" title="Confirmed projects"
+                                        (click)="goToProjectList('projects', ['isConfirmed', 'openTasks'], 'projects.openTasks.confirmed')"
+                                        [ngClass]="{'btn-danger': data.blockData.projects.openTasks.confirmed > 0, 'btn-info': data.blockData.projects.openTasks.confirmed == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.projects.openTasks.confirmed}}</span>
+                                </div>
+                                <i class="fa fa-check text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.projects_with_open_tasks' | translate }}</span>
+                            </li>
+                            <!---->
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn" title="Confirmed projects"
+                                        (click)="goToState('root.invoices.invoices-daily-tab.list', 'todo', [], 'projects.projectsInvoice')"
+                                        [ngClass]="{'btn-danger': data.blockData.projects.projectsInvoice > 0, 'btn-info': data.blockData.projects.projectsInvoice == 0}"
+                                        role="button" tabindex="0">{{data.blockData.projects.projectsInvoice}}</span>
+                                </div>
+                                <i class="fa fa-money text-muted m-r-sm"></i>
+                                <span> {{ 'dashboard.projects_open_for_invoicing' | translate }}</span>
+                            </li>
+                            <!-- <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn" title="Rental requests" (click)="goToRequests('projects.projectRequests')"
+                                          [ngClass]="{'btn-warning': data.blockData.projects.projectRequests > 0, 'btn-info': data.blockData.projects.projectRequests == 0}"
+                                          role="button" tabindex="0">{{data.blockData.projects.projectRequests}}</span>
+                                </div>
+                                <i class="fa fa-envelope text-muted m-r-sm"></i>
+                                <span> {{ 'dashboard.rental_requests' | translate }}</span>
+                            </li> -->
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn"
+                                        (click)="openCancelledProjects('hasCrewOnCancelledSubprojects', 'projects.cancelledWithCrew')"
+                                        [ngClass]="{'btn-danger': data.blockData.projects.cancelledWithCrew > 0, 'btn-info': data.blockData.projects.cancelledWithCrew == 0}"
+                                        role="button" tabindex="0">{{data.blockData.projects.cancelledWithCrew}}</span>
+                                </div>
+                                <i class="fa fa-users text-muted m-r-sm"></i>
+                                <span>{{'dashboard.canceled_projects_with_planned_crew_members' | translate}}</span>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn"
+                                        (click)="openCancelledProjects('hasTransportOnCancelledSubprojects', 'projects.cancelledWithTransport')"
+                                        [ngClass]="{'btn-danger': data.blockData.projects.cancelledWithTransport > 0, 'btn-info': data.blockData.projects.cancelledWithTransport == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.projects.cancelledWithTransport}}</span>
+                                </div>
+                                <i class="fa fa-users text-muted m-r-sm"></i>
+                                <span>{{'dashboard.canceled_projects_with_planned_transport' | translate }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 m-t-md">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">
+                        <h5>{{ 'dashboard.planning' | translate}}</h5>
+
+                        <!--<small class="inline-block text-muted m-l-sm">
+                            (<span>{{data.timeSelections.planning.start}}</span>
+                            <span> - </span>
+                            <span>{{data.timeSelections.planning.end}}</span>)
+                        </small>
+
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-white btn-xs" (click)="openTimeModal('planning')">
+                                <i class="fa fa-clock-o"></i>
+                            </button>
+                        </div>
+                            -->
+                    </div>
+                    <div class="dashboard-card-content">
+                        <ul class="list-group clear-list">
+                            <li class="list-group-item first-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                        (click)="goToPlanner(['isOption', 'unplannedCrewFunctions'], 'planning.unscheduledCrew.option')"
+                                        [ngClass]="{'btn-warning': data.blockData.planning.unscheduledCrew.option > 0, 'btn-info': data.blockData.planning.unscheduledCrew.option == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.planning.unscheduledCrew.option}}</span>
+                                    <!-- <span class="info-btn btn btn-info" title="Confirmed projects"
+                                          (click)="goToPlanner(['isConfirmed', 'unplannedCrewFunctions'], 'planning.unscheduledCrew.confirmed')"
+                                          [ngClass]="{'btn-danger': data.blockData.planning.unscheduledCrew.confirmed > 0, 'btn-info': data.blockData.planning.unscheduledCrew.confirmed == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.unscheduledCrew.confirmed}}</span> -->
+                                </div>
+                                <i class="fa fa-users text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.unscheduled_crew_functions' | translate}}</span>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                        (click)="goToPlanner(['isOption', 'unplannedTransportFunctions'], 'planning.unscheduledTransport.option')"
+                                        [ngClass]="{'btn-warning': data.blockData.planning.unscheduledTransport.option > 0, 'btn-info': data.blockData.planning.unscheduledTransport.option == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.planning.unscheduledTransport.option}}</span>
+                                    <!-- <span class="info-btn btn" title="Confirmed projects"
+                                          (click)="goToPlanner(['isConfirmed', 'unplannedTransportFunctions'], 'planning.unscheduledTransport.confirmed')"
+                                          [ngClass]="{'btn-danger': data.blockData.planning.unscheduledTransport.confirmed > 0, 'btn-info': data.blockData.planning.unscheduledTransport.confirmed == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.unscheduledTransport.confirmed}}</span> -->
+                                </div>
+                                <i class="fa fa-truck text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.unscheduled_transport_functions' | translate }}</span>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                        (click)="goToPlanner(['isOption', 'unfilledCrewFunctions'], 'planning.notEnoughCrew.option')"
+                                        [ngClass]="{'btn-warning': data.blockData.planning.notEnoughCrew.option > 0, 'btn-info': data.blockData.planning.notEnoughCrew.option == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.planning.notEnoughCrew.option}}</span>
+                                    <!-- <span class="info-btn btn" title="Confirmed projects"
+                                          (click)="goToPlanner(['isConfirmed', 'unfilledCrewFunctions'], 'planning.notEnoughCrew.confirmed')"
+                                          [ngClass]="{'btn-danger': data.blockData.planning.notEnoughCrew.confirmed > 0, 'btn-info': data.blockData.planning.notEnoughCrew.confirmed == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.notEnoughCrew.confirmed}}</span> -->
+                                </div>
+                                <i class="fa fa-users text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.understaffed_crew_functions' | translate }}</span>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                        (click)="goToPlanner(['isOption', 'unfilledTransportFunctions'], 'planning.notEnoughTransport.option')"
+                                        [ngClass]="{'btn-warning': data.blockData.planning.notEnoughTransport.option > 0, 'btn-info': data.blockData.planning.notEnoughTransport.option == 0}"
+                                        role="button"
+                                        tabindex="0">{{data.blockData.planning.notEnoughTransport.option}}</span>
+                                    <!-- <span class="info-btn btn" title="Confirmed projects"
+                                          (click)="goToPlanner(['isConfirmed', 'unfilledTransportFunctions'], 'planning.notEnoughTransport.confirmed')"
+                                          [ngClass]="{'btn-danger': data.blockData.planning.notEnoughTransport.confirmed > 0, 'btn-info': data.blockData.planning.notEnoughTransport.confirmed == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.notEnoughTransport.confirmed}}</span> -->
+                                </div>
+                                <i class="fa fa-truck text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.understaffed_transport_functions' | translate}}</span>
+                            </li>
+                            <!-- <li class="list-group-item clearfix">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs" title="Projects in option"
+                                          (click)="goToPlanner(['openCrewInvites'], 'planning.openInvitations.option')"
+                                          [ngClass]="{'btn-warning': data.blockData.planning.openInvitations.option > 0, 'btn-info': data.blockData.planning.openInvitations.option == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.openInvitations.option}}</span>
+                                    <span class="info-btn btn" title="Confirmed projects"
+                                          (click)="goToPlanner(['openCrewInvites'], 'planning.openInvitations.confirmed')"
+                                          [ngClass]="{'btn-danger': data.blockData.planning.openInvitations.confirmed > 0, 'btn-info': data.blockData.planning.openInvitations.confirmed == 0}"
+                                          role="button" tabindex="0">{{data.blockData.planning.openInvitations.confirmed}}</span>
+                                </div>
+                                <i class="fa fa-envelope text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.open_invitations' | translate }}</span>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 m-t-md">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-title">
+                        <h5>{{'dashboard.to_do' | translate}}</h5>
+                        <!--<small class="inline-block text-muted m-l-sm">
+                            (<span>{{data.timeSelections.todo.start}}</span>
+                            <span> - </span>
+                            <span>{{data.timeSelections.todo.end}}</span>)
+                        </small>
+
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-white btn-xs" (click)="openTimeModal('todo')">
+                                <i class="fa fa-clock-o"></i>
+                            </button>
+                        </div>
+                            -->
+                    </div>
+                    <div class="dashboard-card-content">
+                        <ul class="list-group clear-list">
+                            <!---->
+                            <li class="list-group-item first-item clearfix" *ngIf="data.license === 'pro'">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs"
+                                        (click)="goToTaskList(true, 'todo.openTasks.expired')" title="Expired deadline"
+                                        [ngClass]="{'btn-danger': data.blockData.todo.openTasks.expired > 0, 'btn-info': data.blockData.todo.openTasks.expired == 0}"
+                                        role="button" tabindex="0">{{data.blockData.todo.openTasks.expired}}</span>
+                                    <span class="info-btn btn btn-info"
+                                        (click)="goToTaskList(false, 'todo.openTasks.open')" role="button"
+                                        tabindex="0">{{data.blockData.todo.openTasks.open}}</span>
+                                </div>
+                                <i class="fa fa-check-square text-muted m-r-sm"></i>
+                                <span>{{'dashboard.open_tasks' | translate }}</span>
+                            </li>
+                            <!---->
+                            <li class="list-group-item clearfix" [ngClass]="{'first-item':  data.license !== 'pro'}">
+                                <div class="pull-right">
+                                    <span class="info-btn btn m-r-xs"
+                                        (click)="goToState('root.invoices.invoices-tab.list', 'todo', ['notPayed', 'deadline'], 'todo.openInvoices.expired')"
+                                        title="{{'Expired deadline' | translate}}"
+                                        [ngClass]="{'btn-danger': data.blockData.todo.openInvoices.expired > 0, 'btn-info': data.blockData.todo.openInvoices.expired == 0}"
+                                        role="button" tabindex="0">{{data.blockData.todo.openInvoices.expired}}</span>
+                                    <!-- <span class="info-btn btn btn-info"
+                                          (click)="goToState('root.invoices.invoices-tab.list', 'todo', ['notPayed'], 'todo.openInvoices.open')"
+                                          role="button" tabindex="0">{{data.blockData.todo.openInvoices.open}}</span> -->
+                                </div>
+                                <i class="fa fa-money text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.open_invoices' | translate}}</span>
+                            </li>
+                            <!---->
+                            <li class="list-group-item clearfix" *ngIf="data.license === 'pro'">
+                                <div class="pull-right">
+                                    <span class="info-btn btn"
+                                        (click)="goToState('root.subhire.subhire-list', 'todo', ['isOption'], 'todo.subhireoption')"
+                                        role="button" tabindex="0">{{data.blockData.todo.subhireoption}}</span>
+                                </div>
+                                <i class="fa fa-exchange text-muted m-r-sm"></i>
+                                <span>{{'dashboard.open_subhires' | translate}}</span>
+                            </li>
+                            <!---->
+                            <li class="list-group-item clearfix">
+                                <span class="info-btn btn pull-right"
+                                    (click)="goToRepairList(['notRepaired'], 'todo.openRepairs')" role="button"
+                                    tabindex="0">{{data.blockData.todo.openRepairs}}</span>
+                                <i class="fa fa-wrench text-muted m-r-sm"></i>
+                                <span> {{ 'dashboard.open_repairs' | translate}}</span>
+                            </li>
+                            <li class="list-group-item clearfix">
+                                <span class="info-btn btn pull-right"
+                                    (click)="goToState('root.materials.list', 'todo', ['criticalStock'], 'todo.criticalStock')"
+                                    [ngClass]="{'btn-danger': data.blockData.todo.criticalStock > 0, 'btn-info': data.blockData.todo.criticalStock == 0}"
+                                    role="button" tabindex="0">{{data.blockData.todo.criticalStock}}</span>
+                                <i class="fa fa-archive text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.critical_stock' | translate }}</span>
+                            </li>
+                            <!---->
+                            <!-- <li class="list-group-item clearfix"> -->
+                            <!-- *ngIf="data.permissions.berichten.module"-->
+                            <!-- <span class="info-btn btn pull-right"
+                                      (click)="goToState('root.messages.notes-list', 'todo', ['unassigned'], 'todo.unassignedNotes')"
+                                      [ngClass]="{'btn-warning': data.blockData.todo.unassignedNotes > 0, 'btn-info': data.blockData.todo.unassignedNotes == 0}"
+                                      role="button" tabindex="0">{{data.blockData.todo.unassignedNotes}}</span>
+                                <i class="fa fa-sticky-note text-muted m-r-sm"></i>
+                                <span>{{ 'dashboard.unlinked_notes' | translate }}</span> -->
+                            <!-- </li> -->
+                            <!---->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #dashboardTemplate let-board="blockData">
+            <div class="col-md-12 scroll">
+                <div class="dashboard-card">
+                    <div class="dashboard-card-content">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4><span>{{ 'dashboard.my_schedule' | translate}}</span></h4>
+                                <div>
+                                    <!--  class="inspinia-timeline"-->
+                                    <!-- data.getNoPlanningTranslation() -->
+                                    <p *ngIf="board.timeline.length === 0" class="text-success ng-hide">
+                                        {{ 'dashboard.nothing_panning_today' | translate}}
+                                    </p>
+                                    <!---->
+                                    <div style="height: 240px;" perfectScrollbar>
+                                        <ng-container *ngFor="let item of board.timeline">
+                                            <div class="timeline-item pointer" (click)="onTimelineItemClick(item)"
+                                                role="button" tabindex="0">
+                                                <div class="row" [ngClass]="getColorByStatus(item.action)">
+                                                    <div class="col-md-12 date">
+                                                        <i class="fa fa-calendar"></i>
+                                                        <!--  [ngClass]="data.getTimelineIcon(item.itemtype)" -->
+                                                        <span> {{item.time}}</span>
+                                                        <!-- ng-bind="item.start |rmDate : 'time'" -->
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <p class="m-b-xs">
+                                                            <strong>{{item.title}}</strong>
+                                                        </p>
+                                                        <p>{{item.description}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                    <!---->
+                                </div>
+                            </div>
+                            <!---->
+                            <div class="col-sm-4" *ngIf="data.license === 'pro'">
+                                <h4><span>{{'dashboard.equipment_in_out' | translate}}</span></h4>
+                                <ul class="list-group clear-list">
+                                    <li class="list-group-item first-item clearfix">
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.dryhire.in')">
+                                            {{board.equipment.dryhire.in}}
+                                        </button>
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.dryhire.out')">
+                                            {{board.equipment.dryhire.in}}
+                                        </button>
+
+                                        <span>{{'dashboard.dry_hire' | translate}}</span>
+                                        <small
+                                            class="text-muted">(<span>{{'dashboard.transport_by_сlient' | translate}}</span>)</small>
+                                    </li>
+                                    <li class="list-group-item clearfix first-item ">
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.project.in')">
+                                            {{board.equipment.project.in}}
+                                        </button>
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.project.out')">
+                                            {{board.equipment.project.out}}
+                                        </button>
+                                        <span>{{'Projects' | translate}}</span>
+                                        <small
+                                            class="text-muted">(<span>{{'dashboard.transport_by_us' | translate}}</span>)</small>
+                                    </li>
+                                    <li class="list-group-item clearfix first-item">
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.subhire.in')">
+                                            {{board.equipment.subhire.in}}
+                                        </button>
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.subhire.out')">
+                                            {{board.equipment.subhire.out}}
+                                        </button>
+                                        <span>{{'dashboard.subhires' | translate}}</span>
+                                    </li>
+                                    <li class="list-group-item clearfix">
+                                        <button class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('equipment.overtime.in')">
+                                            {{board.equipment.overtime.in}}
+                                        </button>
+                                        <span>{{ 'dashboard.delayed' | translate}}</span>
+                                        <small class="text-muted">(<span>
+                                                {{ 'dashboard.projects' | translate}}</span>)</small>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!---->
+                            <div class="col-sm-4">
+                                <h4>
+                                    <span>{{ 'dashboard.crew' | translate }}</span> / <span>
+                                        {{'dashboard.transport' | translate}}
+                                    </span>
+                                </h4>
+
+                                <ul class="list-group clear-list">
+                                    <li class="list-group-item clearfix first-item">
+                                        <span class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToProjectList('main', ['hasCrew', 'hasTransport'], 'crewTransport.projectsWithPlanning')"
+                                            role="button"
+                                            tabindex="0">{{board.crewTransport.projectsWithPlanning}}</span>
+                                        <span>{{'dashboard.projects_with_crew_and_transport' | translate}}</span>
+                                    </li>
+                                    <li class="list-group-item clearfix first-item">
+                                        <span class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('crewTransport.plannedCrew')" role="button"
+                                            tabindex="0">{{board.crewTransport.plannedCrew}}</span>
+                                        <span>{{ 'dashboard.scheduled_crew_members' | translate}}</span>
+                                    </li>
+                                    <li class="list-group-item clearfix first-item">
+                                        <span class="info-btn btn btn-primary m-r-xs"
+                                            (click)="goToWarehouse('crewTransport.plannedTransport')" role="button"
+                                            tabindex="0">{{board.crewTransport.plannedTransport}}</span>
+                                        <span>{{'dashboard.scheduled_vehicles' | translate}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>

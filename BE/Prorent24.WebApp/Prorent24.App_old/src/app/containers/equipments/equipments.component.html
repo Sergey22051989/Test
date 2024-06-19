@@ -1,0 +1,72 @@
+<rent-filter-panel [entityType]="entityType" (onChanged)="onChangedFilter($event)"></rent-filter-panel>
+
+<div class="inner-content full-height">
+    <jqxSplitter #nestedSplitter [theme]="'metro'" [width]="'100%'" [height]="'100%'"
+        [panels]="panelOptions.nestedSplitter">
+        <div class="splitter-panel">
+            <div class="jumbotron no-margin">
+                <div class="container-fluid">
+                    <div class="inner" pg-parallax>
+                        <h4>{{'equipment' | translate}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="full-height pb-96">
+                <div class="container-fluid bg-white grid-controls-panel p-2">
+                    <div class="pull-right">
+                        <button class="btn btn-link btn-xs ml-1" (click)="excelModal.showExcelImport()">
+                            {{'Import' | translate}} <i class="fa fa-upload"></i>
+                        </button>
+                        <button class="btn btn-link btn-xs ml-1" (click)="onExportData('equipment')">
+                            {{'Export' | translate}} <i class="fa fa-download"></i>
+                        </button>
+                        <button class="btn btn-xs btn-white ml-1" (click)="toggleWidget()"
+                            matTooltip="{{'Open/close widget' | translate}}"><i class="fa fa-cubes"></i></button>
+                        <button class="btn btn-xs btn-white ml-1" (click)="showAdditionalFieldsModal()"
+                            matTooltip="{{'Add columns' | translate}}"><i class="fa fa-list"></i></button>
+                    </div>
+                    <div *ngIf="!removeArrayMode">
+                        <a *ngIf="gridPermission.edit" routerLink="create" class="link-button">
+                            <button type="button" class="btn btn-primary btn-xs mr-1">
+                                <i class="fa fa-plus"></i> {{'form.add' | translate}}
+                            </button>
+                        </a>
+                        <a *ngIf="gridPermission.edit" routerLink="edit/{{selected_entity?.id}}" class="link-button">
+                            <button class="btn btn-info btn-xs mr-1" [disabled]="!canAction"
+                                matTooltip="{{'form.edit' | translate}}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                        </a>
+                        <button *ngIf="gridPermission.delete" class="btn btn-danger btn-xs mr-1"
+                            (click)="changeRemoveArrayMode()" matTooltip="{{'delete' | translate}}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="removeArrayMode">
+                        <button class="btn btn-danger btn-xs mr-1" [disabled]="!canAction" (click)="onDeleteRows()">
+                            <i class="fa fa-trash"></i> {{'Confirm' | translate}}
+                        </button>
+                        <button class="btn btn-white btn-xs mr-1" (click)="changeRemoveArrayMode()">
+                            {{'form.cancel' | translate}}
+                        </button>
+                    </div>
+                </div>
+                <jqxGrid #dataGrid [theme]="'metro'" [localization]="localization" [width]="'100%'" [height]="'100%'"
+                    [source]="source" [columns]="tableSource.columns" [columnsresize]="true" [sortable]="true"
+                    [filterable]="true" [filter]="true" [scrollbarsize]="7" [autoshowfiltericon]="true"
+                    [selectionmode]="selectMode" [columnsreorder]="true" (onRowselect)="onRowSelect($event, true)" 
+                    (onRowdoubleclick)="openEditForm()">
+                </jqxGrid>
+            </div>
+        </div>
+        <div class="splitter-panel">
+            <rent-widget-info [entityType]="entityType" [entityId]="selected_entity?.id" [data]="selected_entity_full">
+            </rent-widget-info>
+        </div>
+    </jqxSplitter>
+
+    <rent-additional-grid-column [entity]="tableEntityType" (onAddColumn)="onAddColumns($event)">
+    </rent-additional-grid-column>
+</div>
+
+<excel [entityType]="entityType"></excel>

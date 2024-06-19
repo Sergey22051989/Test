@@ -1,0 +1,394 @@
+<div class="container-fluid container-fixed-lg pt-3">
+    <form role="form" #form="ngForm" (ngSubmit)="submitDataNew(form)">
+        <input type="hidden" name="id" [(ngModel)]="entity.id">
+        <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+                <a routerLink="/projects" class="link-button">
+                    <button type="button" class="btn btn-white btn-xs mr-1">
+                        {{'form.cancel' | translate}}
+                    </button>
+                </a>
+                <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                    <i class="fa fa-save"></i> {{'form.save' | translate}}
+                </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'data' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                <label class="label-sm">{{'entity.name' | translate}} <span class="text-danger">*</span></label>
+                                <input type="text" placeholder="{{'entity.name' | translate}}" class="form-control"
+                                    id="name" name="name" [(ngModel)]="entity.name" #name="ngModel" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'entity.number' | translate}}</label>
+                                <input type="text" placeholder="{{'Automatically generated if not filled' | translate}}"
+                                    class="form-control" id="number" name="number" [(ngModel)]="entity.number"
+                                    #number="ngModel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'status' | translate}} <span class="text-danger">*</span></label>
+                                <pg-select style="width: 100%;" id="status" name="status" [PlaceHolder]="'Выбрать...'"
+                                    [(ngModel)]="entity.status" [FirstDefault]="true" [required]="true">
+                                    <pg-option *ngFor="let item of projStatus | enumToArray" [Label]="item | translate"
+                                        [Value]="item">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'client' | translate}}</label>
+                              <pg-select style="width: 100%;" [(ngModel)]="entity.clientContactPersonId"
+                                    name="clientContactPersonId"
+                                    [PlaceHolder]="'Введите по крайней мере, три буквы для начала поиска'" AllowClear
+                                    ShowSearch [NotFoundContent]="'Not found'" (keyup)="onChangeContactSearch($event)"
+                                    (ngModelChange)="onSelectedContact(false)" [Filter]="false">
+                                    <pg-option *ngFor="let option of contacts" [Label]="option.name" [Value]="option.id"
+                                        [Disabled]="option.disabled">
+                                    </pg-option>
+                                </pg-select>
+
+                                <div class="pt-2">
+                                    <address *ngIf="entity.clientContactPerson.id > 0">
+                                        <label style="text-decoration: underline">{{'Company:' | translate}}</label>
+                                        {{ entity.clientContactPerson.companyName }}
+                                        <br>
+                                        <label style="text-decoration: underline">{{'The contact person:' | translate}}</label>
+                                        {{ entity.clientContactPerson.lastName }}
+                                        {{ entity.clientContactPerson.firstName }}
+                                        {{ entity.clientContactPerson.middleName }}
+                                    </address>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'locationname' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.locationContactPersonId"
+                                    name="locationContactPersonId"
+                                    [PlaceHolder]="'Введите по крайней мере, три буквы для начала поиска'" AllowClear
+                                    ShowSearch [NotFoundContent]="'Not found'" (keyup)="onChangeContactSearch($event)"
+                                    (ngModelChange)="onSelectedContact(true)" [Filter]="false">
+                                    <pg-option *ngFor="let option of contacts" [Label]="option.name" [Value]="option.id"
+                                        [Disabled]="option.disabled">
+                                    </pg-option>
+                                </pg-select>
+
+                                <div class="pt-2">
+                                    <address *ngIf="entity.locationContactPerson.id > 0">
+                                        <label style="text-decoration: underline">{{'Company:' | translate}}</label>
+                                        {{ entity.locationContactPerson.companyName }}
+                                        <br>
+                                        <label style="text-decoration: underline">{{'The contact person:' | translate}}</label>
+                                        {{ entity.locationContactPerson.lastName }} {{ entity.locationContactPerson.firstName }}
+                                        {{ entity.locationContactPerson.middleName }}
+                                        <br>
+                                        <label style="text-decoration: underline">{{'locationname' | translate}}</label>
+                                        {{ entity.locationContactPerson.visitingAddress?.city }}
+                                        {{ entity.locationContactPerson.visitingAddress?.address }}
+                                        {{ entity.locationContactPerson.visitingAddress?.number }}
+                                    </address>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'timetable' | translate}}
+                    </ng-template>
+
+                    <form role="form" #additionalTimePeriodForm="ngForm"
+                        (ngSubmit)="addAdditionalTime(additionalTimePeriodForm)">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="">{{'period' | translate}}</th>
+                                    <th class="" style="width: 240px;">{{'from' | translate}}</th>
+                                    <th class="" style="width: 240px;">{{'Endings' | translate}}</th>
+                                    <th class="text-right"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" placeholder="" class="form-control" #nameControl="ngModel"
+                                            disabled name="usePeriodName" [(ngModel)]="usePeriod.name">
+                                    </td>
+                                    <td>
+                                        <div class="input-group date">
+                                            <pg-datepicker
+                                                (ngModelChange)="usePeriod.from=$event;_startValueChange('deliveryCollectionStart', 'deliveryCollectionEnd')"
+                                                Placeholder="Начало" [ngModel]="usePeriod.from" name="usePeriodFrom"
+                                                [ShowTime]="true" [DisabledDate]="_disabledStartDate"
+                                                [Format]="'DD-MM-YYYY HH:mm'" [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group date">
+                                            <pg-datepicker
+                                                (ngModelChange)="usePeriod.until=$event;_startValueChange('deliveryCollectionStart', 'deliveryCollectionEnd')"
+                                                Placeholder="Окончание" [ngModel]="usePeriod.until"
+                                                name="usePeriodUntil" [ShowTime]="true"
+                                                [DisabledDate]="_disabledStartDate" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <input type="text" placeholder="" class="form-control" #nameControl="ngModel"
+                                            disabled name="planningPeriodName" [(ngModel)]="planningPeriod.name">
+                                    </td>
+                                    <td>
+                                        <div class="input-group date">
+                                            <pg-datepicker
+                                                (ngModelChange)="planningPeriod.from=$event;_startValueChange('deliveryCollectionStart', 'deliveryCollectionEnd')"
+                                                Placeholder="Начало" [ngModel]="planningPeriod.from"
+                                                name="planningPeriodFrom" [ShowTime]="true"
+                                                [DisabledDate]="_disabledStartDate" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group date">
+                                            <pg-datepicker
+                                                (ngModelChange)="planningPeriod.until=$event;_startValueChange('deliveryCollectionStart', 'deliveryCollectionEnd')"
+                                                Placeholder="Окончание" [ngModel]="planningPeriod.until"
+                                                name="planningPeriodUntil" [ShowTime]="true"
+                                                [DisabledDate]="_disabledStartDate" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                <tr *ngFor="let additionalTime of additionalTimes; let i = index">
+                                    <td class="">
+                                        <input type="text" placeholder="" class="form-control" name="name{{i+1}}"
+                                            [(ngModel)]="additionalTime.name">
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group date">
+                                            <pg-datepicker Placeholder="Начало" [ngModel]="additionalTime.from"
+                                                name="from{{i+1}}" [ShowTime]="true" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group date">
+                                            <pg-datepicker Placeholder="Окончание" [ngModel]="additionalTime.until"
+                                                name="until{{i+1}}" [ShowTime]="true" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">
+                                        <button class="btn btn-link text-danger" (click)="removeAdditionalTime(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- ADDITIONAL TIME FORM -->
+                                <tr>
+                                    <td class="">
+                                        <input type="text" placeholder="{{'Schedule Name' | translate}}" class="form-control"
+                                            name="name" [(ngModel)]="additionalTimeForm.name" required>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group date">
+                                            <pg-datepicker Placeholder="Начало" [ngModel]="additionalTimeForm.from"
+                                                name="from" [ShowTime]="true" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="input-group date">
+                                            <pg-datepicker Placeholder="Окончание" [ngModel]="additionalTimeForm.until"
+                                                name="until" [ShowTime]="true" [Format]="'DD-MM-YYYY HH:mm'"
+                                                [required]="true">
+                                            </pg-datepicker>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">
+                                        <button type="submit" class="btn btn-default"
+                                            [disabled]="additionalTimePeriodForm.invalid"><i
+                                                class="fa fa-plus"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'Detail' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Type of project' | translate}}</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="entity.typeId" id="typeId" name="typeId"
+                                    [PlaceHolder]="'Выбрать...'" (ngModelChange)="changeProjectType($event)">
+                                    <pg-option *ngFor="let item of projectType" [Label]="item.name" [Value]="item.id">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" [class.has-error]="color.invalid && (color.dirty || color.touched)">
+                                <label>{{'entity.colour' | translate}}</label>
+                                <input type="text" class="form-control" id="color" name="color" placeholder="#000000"
+                                    [(colorPicker)]="entity.color" [style.background]="entity.color"
+                                    [(ngModel)]="entity.color" #color="ngModel" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{{'Manager' | translate}}</label>
+                                <div class="input-group">
+                                    <pg-select style="width: 100%;" [(ngModel)]="entity.accountManagerId"
+                                        id="accountManagerId" name="accountManagerId" [PlaceHolder]="'Выбрать...'">
+                                        <pg-option *ngFor="let item of crewMembers"
+                                            [Label]="item.firstName + ' ' + item.lastName" [Value]="item.id">
+                                        </pg-option>
+                                    </pg-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="label-sm">{{'Link' | translate}}</label>
+                                <input type="text" placeholder="Ссылка" class="form-control" id="reference"
+                                    name="reference" [(ngModel)]="entity.reference" #reference="ngModel">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                </pgcard>
+
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        {{'description' | translate}}
+                    </ng-template>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isPublic" checked="checked" name="isPublic"
+                                    [(ngModel)]="entity.isPublic">
+                                <label for="isPublic">
+                                    {{'Publics (for all)' | translate}}
+                                </label>
+                            </div>
+
+                            <div *ngIf="!entity.isPublic"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>{{'Visible for' | translate}}</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'"
+                                    [PlaceHolder]="'Введите не менее 3 символа для начала поиска...'" [Multiple]="true"
+                                    [(ngModel)]="entity.crewMembers" name="crewMembers" [NotFoundContent]="'Not found'"
+                                    (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.lastName + ' ' + u.firstName"
+                                        [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea rows="3" class="form-control" id="description" name="description"
+                                placeholder="..." [(ngModel)]="entity.description" #text="ngModel">
+                                        </textarea>
+                        </div>
+                    </div>
+                </pgcard>
+            </div>
+        </pgcard>
+    </form>
+</div>

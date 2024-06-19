@@ -1,0 +1,76 @@
+<pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+    <ng-template #CardTitle>
+        Примечания
+    </ng-template>
+    <div class="pt-2">
+        <ul class="list-unstyled mb-0">
+            <li *ngFor="let n of data; let i = index" class="small">
+                <button class="btn btn-link no-padding" (click)="editNote(n)"><i class="fa fa-edit"></i></button>
+                {{i + 1}}. {{n.text}}
+                <span class="hint fs-10"><i class="fa"
+                        [ngClass]="n.confidential === 'everyone' ? 'fa-eye': 'fa-eye-slash'"></i>
+                </span>
+            </li>
+        </ul>
+        <div class="text-right mt-2">
+            <button class="btn btn-xs btn-white" (click)="editNote()"><i class="fa fa-plus"></i>
+                {{'form.add' | translate}}</button>
+        </div>
+    </div>
+</pgcard>
+
+<!-- MODAL NOTES  -->
+<div bsModal #noteModal="bs-modal" class="modal fade stick-up" [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix">
+                <button type="button" class="close" (click)="noteModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">Примечение</span></h4>
+            </div>
+            <form role="form" #form="ngForm" (ngSubmit)="submitNote(form)">
+                <input type="hidden" name="id" [(ngModel)]="note.id">
+                <input type="hidden" name="referenceId" [(ngModel)]="entityId">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ note.id ? "Редактировать " : "Создать новое " }} примечание
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Конфиденциальность</label>
+                                <pg-select style="width: 100%;" [(ngModel)]="note.confidential" name="confidential"
+                                    [PlaceHolder]="''" AllowClear ShowSearch [required]="true" [FirstDefault]="true">
+                                    <pg-option *ngFor="let confidential of confidentialType | enumToArray"
+                                        [Label]="confidential | translate" [Value]="confidential">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <textarea rows="3" class="form-control" id="text" name="text" placeholder="..."
+                                    [(ngModel)]="note.text" #remark="ngModel" required>
+                                            </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="form.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="noteModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                    <button *ngIf="note.id" type="button" class="btn text-danger btn-xs" (click)="deleteNote(note.id)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

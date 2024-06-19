@@ -1,0 +1,400 @@
+<div class="jumbotron no-margin">
+    <div class="sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax="">
+            <div class="container-fluid sm-p-l-0 sm-p-r-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="">{{'account' | translate}}</a></li>
+                    <li class="breadcrumb-item active">{{'companyInfo' | translate}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-transparent">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <form role="form" #companyDetailsForm="ngForm" (ngSubmit)="onSubmit(companyDetailsForm)">
+                    <pgcard MinimalHeader="true" HeaderClass="separator">
+                        <ng-template #CardTitle>
+                            <button type="submit" class="btn btn-primary btn-xs"
+                                [disabled]="companyDetailsForm.invalid">
+                                <i class="fa fa-save"></i> {{'form.save' | translate}}
+                            </button>
+                        </ng-template>
+
+                        <div class="pt-3">
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-building-o"></i> {{'CompanyInfo' | translate}}
+                                </ng-template>
+                                <div class="pt-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default required"
+                                                [class.has-error]="companyName.invalid && (companyName.dirty || companyName.touched)">
+                                                <label>{{'Full_company_name' | translate}}</label>
+                                                <input type="text" placeholder="{{'Full_company_name' | translate}}"
+                                                    class="form-control" id="companyName" name="companyName"
+                                                    [(ngModel)]="entity.companyName" #companyName="ngModel" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label>{{'Short_company_name' | translate}}</label>
+                                                <input type="text" placeholder="{{'Short_company_name' | translate}}"
+                                                    class="form-control" id="shortName" name="shortName"
+                                                    [(ngModel)]="entity.shortName" #shortName="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default required"
+                                                [class.has-error]="invoiceEmail.invalid && (invoiceEmail.dirty || invoiceEmail.touched)">
+                                                <label class="label-sm">Email</label>
+                                                <input type="email" placeholder="ex: some@example.com"
+                                                    class="form-control" id="invoiceEmail" name="invoiceEmail"
+                                                    [(ngModel)]="entity.invoiceEmail" #invoiceEmail="ngModel" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label>{{'Website' | translate}}</label>
+                                                <input type="text" placeholder="{{'Website' | translate}}" class="form-control" id="website"
+                                                    name="website" [(ngModel)]="entity.website" #website="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="hidden" [(ngModel)]="entity.phones" name="phones">
+                                            <div class="form-group">
+                                                <label>{{'phone' | translate}}</label>
+                                                <div class="input-group mb-2"
+                                                    *ngFor="let phone of entity.phones; index as i">
+                                                    <input type="text" class="form-control" name="phones[{{i}}]"
+                                                        [(ngModel)]="phone" mask="+0(000) 000-00-00"
+                                                        [showMaskTyped]="true" [dropSpecialCharacters]="false">
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-white"
+                                                            (click)="removePhone(i)"><i
+                                                                class="fa fa-times"></i></button>
+                                                    </div>
+                                                </div>
+
+
+                                                <form role="form" #phoneForm="ngForm" (ngSubmit)="addPhone(phoneForm)">
+                                                    <div class="input-group">
+                                                        <input type="text" placeholder="" class="form-control"
+                                                            name="phone" [(ngModel)]="phone_Form.phone"
+                                                            mask="+0(000) 000-00-00" [showMaskTyped]="true"
+                                                            [dropSpecialCharacters]="false" required />
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-white"
+                                                                [disabled]="phoneForm.invalid"><i
+                                                                    class="fa fa-plus"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6"></div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    {{'Company details' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'ITN' | translate}}</label>
+                                                <input type="email" placeholder="{{'ITN' | translate}}" class="form-control" id="inn"
+                                                    name="inn" [(ngModel)]="entity.inn" #inn="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'IEC' | translate}}</label>
+                                                <input type="email" placeholder="{{'IEC' | translate}}" class="form-control" id="kpp"
+                                                    name="kpp" [(ngModel)]="entity.kpp" #kpp="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'PSRN' | translate}}</label>
+                                                <input type="email" placeholder="{{'PSRN' | translate}}" class="form-control" id="ogrn"
+                                                    name="ogrn" [(ngModel)]="entity.ogrn" #ogrn="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'OKPO' | translate}}</label>
+                                                <input type="email" placeholder="{{'OKPO' | translate}}" class="form-control" id="okpo"
+                                                    name="okpo" [(ngModel)]="entity.okpo" #okpo="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'Bank' | translate}}</label>
+                                                <input type="email" placeholder="{{'Bank' | translate}}" class="form-control" id="bank"
+                                                    name="bank" [(ngModel)]="entity.bank" #bank="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'Payment account' | translate}}</label>
+                                                <input type="email" placeholder="{{'Payment account' | translate}}" class="form-control"
+                                                    id="checkingAccount" name="checkingAccount"
+                                                    [(ngModel)]="entity.checkingAccount" #checkingAccount="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{"Correspondent account" | translate}}</label>
+                                                <input type="email" placeholder="{{'Correspondent account' | translate}}"
+                                                    class="form-control" id="correspondentAccount"
+                                                    name="correspondentAccount"
+                                                    [(ngModel)]="entity.correspondentAccount"
+                                                    #correspondentAccount="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'BIC' | translate}}</label>
+                                                <input type="email" placeholder="{{'BIC' | translate}}" class="form-control" id="bic"
+                                                    name="bic" [(ngModel)]="entity.bic" #bic="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-map-marker"></i> {{'address' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>{{'country' | translate}}</label>
+                                                <pg-select style="width: 100%;" name="countryId"
+                                                    [(ngModel)]="entity.countryId" [PlaceHolder]="''" AllowClear
+                                                    ShowSearch>
+                                                    <pg-option *ngFor="let item of countries" [Label]="item.name"
+                                                        [Value]="item.id">
+                                                    </pg-option>
+                                                </pg-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>{{'city' | translate}}</label>
+                                                <input type="text" placeholder="{{'city' | translate}}"
+                                                    class="form-control" id="city" name="city" [(ngModel)]="entity.city"
+                                                    #city="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{'postalCode' | translate}}</label>
+                                                <input type="text" placeholder="{{'postalCode' | translate}}"
+                                                    class="form-control" id="postcode" name="postcode"
+                                                    [(ngModel)]="entity.postcode" #postcode="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>{{'street' | translate}}</label>
+                                                <input type="text" placeholder="{{'street' | translate}}"
+                                                    class="form-control" id="street" name="street"
+                                                    [(ngModel)]="entity.street" #street="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group" pgFormGroupDefault>
+                                                <label>{{'houseNumber' | translate}}</label>
+                                                <input type="text" placeholder="{{'houseNumber' | translate}}"
+                                                    class="form-control" id="houseNumber" name="houseNumber"
+                                                    [(ngModel)]="entity.houseNumber" #houseNumber="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true" ngModelGroup="additionalOffice">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-building-o"></i> {{'Additional office' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>{{'country' | translate}}</label>
+                                                <pg-select style="width: 100%;" name="countryId"
+                                                    [(ngModel)]="entity.additionalOffice.countryId" [PlaceHolder]="''"
+                                                    AllowClear ShowSearch>
+                                                    <pg-option *ngFor="let item of countries" [Label]="item.name"
+                                                        [Value]="item.id">
+                                                    </pg-option>
+                                                </pg-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>{{'city' | translate}}</label>
+                                                <input type="text" placeholder="{{'city' | translate}}"
+                                                    class="form-control" id="city" name="city"
+                                                    [(ngModel)]="entity.additionalOffice.city" #city="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>{{'postalCode' | translate}}</label>
+                                                <input type="text" placeholder="{{'postalCode' | translate}}"
+                                                    class="form-control" id="postcode" name="postcode"
+                                                    [(ngModel)]="entity.additionalOffice.postcode" #postcode="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>{{'street' | translate}}</label>
+                                                <input type="text" placeholder="{{'street' | translate}}"
+                                                    class="form-control" id="street" name="street"
+                                                    [(ngModel)]="entity.additionalOffice.street" #street="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group" pgFormGroupDefault>
+                                                <label>{{'houseNumber' | translate}}</label>
+                                                <input type="text" placeholder="{{'houseNumber' | translate}}"
+                                                    class="form-control" id="houseNumber" name="houseNumber"
+                                                    [(ngModel)]="entity.additionalOffice.houseNumber"
+                                                    #houseNumber="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-user-o"></i> {{'ContactPerson' | translate}} - {{'projectleader' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row" ngModelGroup="directorInfo">
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'lastname' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="lastName"
+                                                    [(ngModel)]="entity.directorInfo.lastName">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'firstname' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="firstName"
+                                                    [(ngModel)]="entity.directorInfo.firstName">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'middlename' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="middleName"
+                                                    [(ngModel)]="entity.directorInfo.middleName">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    <i class="fa fa-2x fa-user-o"></i> {{'ContactPerson' | translate}} - {{'Chief Accountant' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row" ngModelGroup="accountantInfo">
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'lastname' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="lastName"
+                                                    [(ngModel)]="entity.accountantInfo.lastName"
+                                                    #accountantInfo_lastName="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'firstname' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="firstName"
+                                                    [(ngModel)]="entity.accountantInfo.firstName"
+                                                    #accountantInfo_firstName="ngModel">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label class="label-sm">{{'middlename' | translate}}</label>
+                                                <input type="text" placeholder="{{'contactPersonName' | translate}}"
+                                                    class="form-control" name="middleName"
+                                                    [(ngModel)]="entity.accountantInfo.middleName"
+                                                    #accountantInfo_middleName="ngModel">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+
+                            <pgcard MinimalHeader="true">
+                                <ng-template #CardTitle>
+                                    {{'Logo' | translate}}
+                                </ng-template>
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img alt="logo" height="80" pgretina="" [src]="logo$ | async">
+                                            <div class="mt-2">
+                                                <input style="display: none" type="file"
+                                                    (change)="onLogoChanged($event)" #logoInput>
+                                                <button type="button" class="btn btn-xs btn-default"
+                                                    (click)="logoInput.click()">{{'Change logo' | translate}}</button>
+                                                <div>
+                                                    <span class="help fs-10">{{'The file should not exceed 40 kb. Allowed image formats: jpeg, png, gif' | translate}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </pgcard>
+                        </div>
+                    </pgcard>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

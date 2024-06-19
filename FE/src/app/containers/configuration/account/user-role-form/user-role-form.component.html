@@ -1,0 +1,87 @@
+<div class="jumbotron no-margin">
+    <div class="sm-p-l-0 sm-p-r-0">
+        <div class="inner" pg-parallax="">
+            <div class="container-fluid sm-p-l-0 sm-p-r-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="">{{'account' | translate}}</a></li>
+                    <li class="breadcrumb-item">
+                        <a routerLink="/configuration/account/user-roles">{{'userRoles' | translate}}</a>
+                    </li>
+                    <li class="breadcrumb-item active">{{ entity.id ? "Редактировать " : "Создать " }} роль</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-transparent">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+                    <input type="hidden" name="id" [(ngModel)]="entity.id">
+                    <pgcard MinimalHeader="true" HeaderClass="separator">
+                        <ng-template #CardTitle>
+                            <a routerLink="/configuration/account/user-roles" class="link-button">
+                                <button type="button" class="btn btn-white btn-xs mr-1">
+                                    {{'form.cancel' | translate}}
+                                </button>
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                                <i class="fa fa-save"></i> {{'form.save' | translate}}
+                            </button>
+                        </ng-template>
+
+                        <div class="pt-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group"
+                                         [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                        <label class="label-sm">{{'Position' | translate}}</label>
+                                        <input type="text" placeholder="{{'Position' | translate}}"
+                                               class="form-control" id="name" name="name" [(ngModel)]="entity.name"
+                                               #name="ngModel" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group"
+                                             [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                            <label class="label-sm">{{'Salary' | translate}}</label>
+                                            <input type="number" placeholder="0"
+                                                   class="form-control" id="rate" name="rate" [(ngModel)]="entity.rate"
+                                                   #name="ngModel">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <pg-collapseset *ngFor="let permission of entity.modulePermissions; let i = index" class="row">
+                                <pg-collapse [Title]="permission.name | translate" [Active]="permission.value" [HeaderCheckbox]="true" [(Checked)]="permission.value" [Id]="i">
+                                    <ng-container *ngFor="let function of permission.functionPermissions; let j = index">
+                                        <div class="row pb-2">
+                                            <label class="col-md-2  mt-2" style="text-align:right;">{{ function.name | translate}}</label>
+                                            <div class="col-md-10">
+                                                <div class="row">
+                                                    <pg-select style="width: 100%;" name="select_{{i}}_{{j}}" id="select_{{i}}_{{j}}"
+                                                               [(ngModel)]="function.value" [PlaceHolder]="''">
+                                                        <pg-option *ngFor="let item of function.enum"  [Label]="item.key | translate"
+                                                                   [Value]="item.key">
+                                                        </pg-option>
+                                                    </pg-select>
+                                                    <!--<small class="help-block m-b-xs">Is allowed to see the timeline of vehicles in the vehicles module. The timeline shows the projects a vehicle is planned on.</small>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </ng-container>
+                                </pg-collapse>
+                            </pg-collapseset>
+                        </div>
+                    </pgcard>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

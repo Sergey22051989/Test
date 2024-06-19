@@ -1,0 +1,122 @@
+<pgcard Controls="false" Type="transparent" HeaderClass="separator" AdditionalClasses="mb-0">
+    <ng-template #CardTitle>
+        Задачи
+    </ng-template>
+    <div class="pt-2">
+        <ul class="list-unstyled mb-0">
+            <li *ngFor="let task of data; let i = index" class="small pt-2 pb-2"
+                style="border-bottom: 0.5px dashed #d1d1d1;">
+                <button class="btn btn-link no-padding mr-1" (click)="editTask(task.id)" matTooltip="Редактировать"><i
+                        class="fa fa-edit"></i></button>
+                <span [style.text-decoration]="task.completedIn ? 'line-through' : 'none'">{{i + 1}}.
+                    {{task.name}}
+                </span>
+                <p *ngIf="task.author" class="hint fs-10">Автор: {{ task.author }}</p>
+                <p *ngIf="task.completedIn && task.completedBy" class="hint fs-10">Завершено: {{ task.completedBy }}</p>
+                <div [style.color]="!task.completedIn && task.expiredTime ? '#d95165' : 'none'" class="hint fs-10">
+                    <!-- <button *ngIf="!task.completedIn" class="btn btn-link no-padding" (click)="onCloseTask(task)"><i
+                            class="fa fa-check"></i></button> -->
+                    <span *ngIf="task.completedIn" class="no-padding"><i class="fa fa-check"></i></span>
+                    Крайний срок: {{task.deadLine | date:'dd.MM.yyyy HH:mm' }}
+                </div>
+            </li>
+        </ul>
+
+        <div *ngIf="data" class="text-right mt-2">
+            <button class="btn btn-xs btn-white" (click)="editTask()"><i class="fa fa-plus"></i>
+                {{'form.add' | translate}}</button>
+        </div>
+    </div>
+</pgcard>
+
+<!-- MODAL TASK  -->
+<div bsModal #taskModal="bs-modal" class="modal fade stick-up" tabindex="-1" role="dialog" aria-labelledby="rowModal"
+    [config]="{backdrop: 'static'}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix ">
+                <button type="button" class="close" (click)="taskModal.hide()" aria-hidden="true">
+                    <i class="pg pg-close fs-14"></i>
+                </button>
+                <h4 class="p-b-5"><span class="semi-bold">Задача</span></h4>
+            </div>
+            <form role="form" #formTask="ngForm" (ngSubmit)="onSubmitTask(formTask)">
+                <input type="hidden" id="id" name="id" [(ngModel)]="task.id">
+                <input type="hidden" id="crewMemberId" name="crewMemberId" [(ngModel)]="entityId">
+                <div class="modal-body">
+                    <p class="small-text">
+                        {{ task.id ? "Редактировать " : "Создать новую " }} задачу
+                    </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" [class.has-error]="name.invalid && (name.dirty || name.touched)">
+                                <label>Задача</label>
+                                <input type="text" class="form-control" name="name" placeholder="Наименование задачи"
+                                    [(ngModel)]="task.name" #name="ngModel" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Крайний срок</label>
+                                <div class="input-group date">
+                                    <pg-datepicker name="deadLine" [(ngModel)]="task.deadLine" [ShowTime]="true"
+                                        [Format]="'DD-MM-YYYY HH:mm'" [Placeholder]="'Выберите дату...'"></pg-datepicker>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="checkbox check-primary">
+                                <input type="checkbox" id="isPublic" checked="checked" name="isPublic"
+                                    [(ngModel)]="task.isPublic">
+                                <label for="isPublic">
+                                    Общественный
+                                </label>
+                            </div>
+
+                            <div *ngIf="!task.isPublic"
+                                class="form-group form-group-default form-group-default-select2">
+                                <label>Персонал</label>
+                                <pg-select style="width: 100%;" [Mode]="'multiple'" [PlaceHolder]="'Поиск...'"
+                                    [Multiple]="true" [(ngModel)]="task.crewMembers" name="crewMembers"
+                                    [NotFoundContent]="'Not found'" (keyup)="onChangeUserSearch($event)">
+                                    <pg-option *ngFor="let u of users" [Label]="u.username" [Value]="u">
+                                    </pg-option>
+                                </pg-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>{{'entity.description' | translate}}</label>
+                                <textarea rows="3" class="form-control" id="description" name="description"
+                                    placeholder="..." [(ngModel)]="task.description" #text="ngModel">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-xs btn-primary btn-cons" [disabled]="formTask.invalid">
+                        {{'form.save' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-cons" (click)="taskModal.hide()">
+                        {{'form.cancel' | translate}}
+                    </button>
+                    <button *ngIf="task.id" type="button" class="btn text-danger btn-xs" (click)="deleteTask(task.id)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

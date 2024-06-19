@@ -1,0 +1,107 @@
+<div class="jumbotron no-margin">
+  <div class="sm-p-l-0 sm-p-r-0">
+    <div class="inner" pg-parallax="">
+      <div class="container-fluid sm-p-l-0 sm-p-r-0">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="">{{'Settings' | translate}}</a></li>
+          <li class="breadcrumb-item active">{{'TimeAndLocation' | translate}}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-transparent">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <form role="form" #form="ngForm" (ngSubmit)="onSubmit(form)">
+          <pgcard MinimalHeader="true" HeaderClass="separator">
+            <ng-template #CardTitle>
+              <button type="submit" class="btn btn-primary btn-xs" [disabled]="form.invalid">
+                <i class="fa fa-save"></i> {{'form.save' | translate}}
+              </button>
+            </ng-template>
+
+            <div class="pt-3">
+                <pgcard MinimalHeader="true">
+                    <ng-template #CardTitle>
+                        <i class="fa fa-2x fa-clock-o"></i> {{'Timezone' | translate}}
+                    </ng-template>
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group form-group-default form-group-default-select2 required">
+                                    <label class="">{{'Timezone' | translate}}</label>
+                                    <pg-select style="width: 100%;" [(ngModel)]="entity.timeZone" name="timeZone"
+                                               [PlaceHolder]="'Choose time zone'" AllowClear ShowSearch>
+                                        <!-- {{'Choose time zone' | translate}}-->
+                                        <pg-option *ngFor="let zone of timeZones" [Label]="zone.name" [Value]="zone.id">
+                                        </pg-option>
+                                    </pg-select>
+                                </div>
+                                <span class="small hint-text">{{'Current time:' | translate}} {{dateNow | date:'dd/MM/yyyy HH:mm'}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </pgcard>
+
+                <!--  <pgcard MinimalHeader="true">
+      <ng-template #CardTitle>
+        <i class="fa fa-2x fa-home"></i> {{'AREA DATA FOR CALCULATION OF DISTANCE' | translate}}
+      </ng-template>
+      <div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>{{'country' | translate}}</label>
+              <pg-select style="width: 100%;" name="countryId" [(ngModel)]="entity.countryId"
+                [PlaceHolder]="'Choose...' " AllowClear ShowSearch>
+                <pg-option *ngFor="let item of countries" [Label]="item.name" [Value]="item.id">
+                </pg-option>
+              </pg-select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group" [class.has-error]="city.invalid && (city.dirty || city.touched)">
+              <label class="label-sm">{{'city' | translate}}</label>
+              <input type="text" placeholder="{{'city' | translate}}" class="form-control" id="city" name="city"
+                [(ngModel)]="entity.city" #city="ngModel" required>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group"
+              [class.has-error]="postcode.invalid && (postcode.dirty || postcode.touched)">
+              <label class="label-sm">{{'postalcode' | translate}}</label>
+              <input type="text" placeholder="{{'postalcode' | translate}}" class="form-control" id="postcode"
+                name="postCode" [(ngModel)]="entity.postcode" #postcode="ngModel" required>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group" [class.has-error]="street.invalid && (street.dirty || street.touched)">
+              <label class="label-sm">{{'street' | translate}}</label>
+              <input type="text" placeholder="{{'street' | translate}}" class="form-control" id="street" name="street"
+                [(ngModel)]="entity.street" #street="ngModel" required>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="label-sm">{{'houseNumber' | translate}}</label>
+              <input type="text" placeholder="{{'houseNumber' | translate}}" class="form-control" id="houseNumber"
+                name="houseNumber" [(ngModel)]="entity.houseNumber" #houseNumber="ngModel">
+            </div>
+          </div>
+        </div>
+      </div>
+    </pgcard> -->
+            </div>
+          </pgcard>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
